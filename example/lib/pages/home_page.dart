@@ -31,8 +31,8 @@ class _HomePageState extends State<HomePage> {
           _buildReturnDataExample(),
           _buildPostListExample(),
           _buildInternalNavExample(),
-          // _buildMultiPushExample(),
-          // _buildMultiRemoveExample(),
+          _buildMultiPushExample(),
+          _buildMultiRemoveExample(),
         ],
       ),
     );
@@ -112,6 +112,51 @@ class _HomePageState extends State<HomePage> {
       onTap: () {
         APSNavigator.of(context).pushNamed(
           path: '/internal_navs',
+        );
+      },
+    );
+  }
+
+  Widget _buildMultiPushExample() {
+    return GestureDetector(
+      child: ListTile(
+        leading: Icon(Icons.navigation),
+        title: Text(
+          'Multi Push Examples (tap to push 4 Pages on top of this at once)',
+        ),
+      ),
+      onTap: () {
+        APSNavigator.of(context).insertAll(
+          list: [
+            ApsPushListParam(path: '/multi_push', params: {'number': 1}),
+            ApsPushListParam(path: '/multi_push', params: {'number': 2}),
+            ApsPushListParam(path: '/multi_push', params: {'number': 3}),
+            ApsPushListParam(path: '/multi_push', params: {'number': 4}),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildMultiRemoveExample() {
+    return GestureDetector(
+      child: ListTile(
+        leading: Icon(Icons.navigation),
+        title: Text(
+          'Pushes 7 pages at once on top of this, and allow to remove pages between a range',
+        ),
+      ),
+      onTap: () {
+        APSNavigator.of(context).insertAll(
+          list: [
+            ApsPushListParam(path: '/multi_push', params: {'number': 1}),
+            ApsPushListParam(path: '/multi_push', params: {'number': 2}),
+            ApsPushListParam(path: '/multi_push', params: {'number': 3}),
+            ApsPushListParam(path: '/multi_push', params: {'number': 4}),
+            ApsPushListParam(path: '/multi_push', params: {'number': 5}),
+            ApsPushListParam(path: '/multi_push', params: {'number': 6}),
+            ApsPushListParam(path: '/multi_remove'),
+          ],
         );
       },
     );

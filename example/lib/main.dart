@@ -1,10 +1,11 @@
-import 'package:aps_navigator/aps.dart';
-import 'pages/examples/multi_push_page.dart';
 import 'package:flutter/material.dart';
+
+import 'package:aps_navigator/aps.dart';
 
 import 'pages/examples/dynamic_url_page.dart';
 import 'pages/examples/internal_navigator/internal_navigators_page.dart';
-import 'pages/examples/multi_remove_page.dart';
+import 'pages/examples/multi/multi_push_page.dart';
+import 'pages/examples/multi/multi_remove_page.dart';
 import 'pages/examples/posts/post_details_page.dart';
 import 'pages/examples/posts/post_list_page.dart';
 import 'pages/examples/return_data_page.dart';

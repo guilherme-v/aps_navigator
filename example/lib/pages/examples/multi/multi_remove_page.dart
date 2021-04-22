@@ -36,7 +36,7 @@ class _MultiRemovePageState extends State<MultiRemovePage> {
                   var msg = '';
                   if (!_removed) {
                     _removed = true;
-                    // APSNavigator.of(context).removeRange(start: 2, end: 5);
+                    APSNavigator.of(context).removeRange(start: 2, end: 5);
                     msg = 'Pages [2-4] removed';
                   } else {
                     msg = 'Already removed';
@@ -46,7 +46,7 @@ class _MultiRemovePageState extends State<MultiRemovePage> {
                   );
                 },
                 child: Text(
-                    'click here to remove the range: 2-4, then navigate back to see the result'),
+                    'click here to remove the range: [2-4], then navigate back to see the result'),
               ),
             ),
           ],

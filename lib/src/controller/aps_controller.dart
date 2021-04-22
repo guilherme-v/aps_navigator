@@ -4,6 +4,7 @@ import '../aps_route/aps_route_descriptor.dart';
 import '../aps_route/aps_route_matcher.dart';
 import '../aps_snapshot.dart';
 import '../helpers.dart';
+import 'aps_push_list_param.dart';
 
 class APSController extends ChangeNotifier {
   /// Global key used by the [Navigator] instance created internally by [APSNavigator].
@@ -90,31 +91,31 @@ class APSController extends ChangeNotifier {
     required String path,
     Map<String, dynamic> params = const {},
   }) {
-    final plainLocation = Helpers.locationWithoutQueries(path);
-
-    // try to find a routeFunction to merged Path+Params
-    var location = Helpers.mergeLocationAndParams(plainLocation, params);
-    var template = routerMatcher.getTemplateForRoute(location);
-
-    // if not found, fallback to find a template to Path only
-    if (template == null) {
-      location = path;
-      template = routerMatcher.getTemplateForRoute(path);
-    }
-
-    // at least one template should be found at this point
-    if (template == null) throw 'Invalid path';
-
-    final descriptorToAdd = ApsRouteDescriptor(
-      location: location,
-      template: template,
-      params: params,
-    );
+    final descriptorToAdd = _createDescriptorFrom(path: path, params: params);
 
     currentSnapshot.routesDescriptors.add(descriptorToAdd);
     notifyListeners();
 
     return descriptorToAdd.popCompleter.future as Future<T>;
+  }
+
+  void insertAll({int? position, required List<ApsPushListParam> list}) {
+    final desc = currentSnapshot.routesDescriptors;
+
+    // Check for valid a position
+    if (position != null) {
+      final isPositionValid = position >= 0 || position <= desc.length - 1;
+      final msg = 'Trying to push List at invalid position: $position';
+      if (!isPositionValid) throw msg;
+    }
+
+    final pushAt = position ?? desc.length;
+    final descriptionListToAdd = list.map(
+      (lp) => _createDescriptorFrom(path: lp.path, params: lp.params),
+    );
+
+    desc.insertAll(pushAt, descriptionListToAdd);
+    notifyListeners();
   }
 
   ///
@@ -156,6 +157,25 @@ class APSController extends ChangeNotifier {
     notifyListeners();
 
     return true;
+  }
+
+  /// Removes a range of Pages from stack history.
+  ///
+  /// Removes the elements with positions greater than or equal to [start]
+  /// and less than [end], from the list.
+  /// This reduces the list's length by `end - start`.
+  ///
+  /// The provided range, given by [start] and [end], must be valid.
+  /// A range from [start] to [end] is valid if 0 ≤ `start` ≤ `end` ≤ [length].
+  /// An empty range (with `end == start`) is valid.
+  ///
+  void removeRange({required int start, required int end}) {
+    final desc = currentSnapshot.routesDescriptors;
+
+    if (start < 0 || end >= desc.length - 1) throw 'Invalid range';
+
+    desc.removeRange(start, end);
+    notifyListeners();
   }
 
   ///
@@ -203,5 +223,31 @@ class APSController extends ChangeNotifier {
 
   void _forceBrowserUpdateURL() {
     Router.navigate(buildContext, () {});
+  }
+
+  ApsRouteDescriptor _createDescriptorFrom({
+    required String path,
+    required Map<String, dynamic> params,
+  }) {
+    final plainLocation = Helpers.locationWithoutQueries(path);
+
+    // try to find a routeFunction to merged Path+Params
+    var location = Helpers.mergeLocationAndParams(plainLocation, params);
+    var template = routerMatcher.getTemplateForRoute(location);
+
+    // if not found, fallback to find a template to Path only
+    if (template == null) {
+      location = path;
+      template = routerMatcher.getTemplateForRoute(path);
+    }
+
+    // at least one template should be found at this point
+    if (template == null) throw 'Invalid path';
+
+    return ApsRouteDescriptor(
+      location: location,
+      template: template,
+      params: params,
+    );
   }
 }
