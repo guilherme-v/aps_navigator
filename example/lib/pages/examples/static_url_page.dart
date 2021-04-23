@@ -8,11 +8,13 @@ class StaticURLPage extends StatefulWidget {
   @override
   _StaticURLPageState createState() => _StaticURLPageState(tabIndex);
 
-  static Page route({Map<String, dynamic>? params}) {
+  static Page route(RouteData data) {
+    final tab = data.values['tab'] == 'books' ? 0 : 1;
+
     return MaterialPage(
       key: ValueKey('StaticURLPage'), // Important! Always include a key
       child: StaticURLPage(
-        tabIndex: params?['tab'] == 'books' ? 0 : 1,
+        tabIndex: tab,
       ),
     );
   }
@@ -31,7 +33,7 @@ class _StaticURLPageState extends State<StaticURLPage> {
   @override
   void didUpdateWidget(StaticURLPage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final previous = APSNavigator.of(context).currentConfig.params;
+    final previous = APSNavigator.of(context).currentConfig.values;
     tabIndex = (previous['tab'] == 'books') ? 0 : 1;
   }
 

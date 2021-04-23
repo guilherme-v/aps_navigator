@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter  
   uri: ^1.0.0
+  collection: ^1.15.0
 
 
 dev_dependencies:

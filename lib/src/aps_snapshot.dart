@@ -2,7 +2,8 @@ import 'aps_route/aps_route_descriptor.dart';
 import 'parser/aps_parser_data.dart';
 
 class ApsSnapshot<T> {
-  List<ApsRouteDescriptor> routesDescriptors;
+  final List<ApsRouteDescriptor> routesDescriptors;
+  final bool descriptorsWereLoadedFromBrowserHistory;
 
   ApsRouteDescriptor get topConfiguration => routesDescriptors.last;
 
@@ -10,12 +11,21 @@ class ApsSnapshot<T> {
 
   ApsSnapshot({
     required this.routesDescriptors,
-  }); // TODO: passar em cada descriptor definindo que o anteriror é PopCompliter pq isso nao foi serializado
+    this.descriptorsWereLoadedFromBrowserHistory = false,
+  });
 
   ApsParserData toApsParserData() {
     return ApsParserData(
       location: topConfiguration.location,
       descriptorsJsons: routesDescriptors.map((d) => d.toJson()).toList(),
+    );
+  }
+
+  ApsSnapshot clone() {
+    return ApsSnapshot(
+      routesDescriptors: routesDescriptors.map((d) => d.copyWith()).toList(),
+      descriptorsWereLoadedFromBrowserHistory:
+          this.descriptorsWereLoadedFromBrowserHistory,
     );
   }
 }

@@ -8,7 +8,7 @@ class PostListPage extends StatefulWidget {
   @override
   _PostListPageState createState() => _PostListPageState();
 
-  static Page route({Map<String, dynamic>? params}) {
+  static Page route(RouteData _) {
     return MaterialPage(
       key: ValueKey('PostListPage'), // Important! Always include a key
       child: PostListPage(),
@@ -36,7 +36,7 @@ class _PostListPageState extends State<PostListPage> {
               APSNavigator.of(context).pushNamed(
                 // routeBuilder: PostListItemPage.route,
                 path: '/posts/$index',
-                params: {'post_id': '$index'},
+                // params: {'post_id': '$index'},
                 // updatePath: false,
               );
             },

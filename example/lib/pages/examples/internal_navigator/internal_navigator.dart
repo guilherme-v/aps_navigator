@@ -35,7 +35,6 @@ class _InternalNavigatorState extends State<InternalNavigator> {
   @override
   Widget build(BuildContext context) {
     return Router(
-      // key: UniqueKey(),
       routerDelegate: childNavigator,
       backButtonDispatcher: childNavigator.backButtonDispatcher,
     );

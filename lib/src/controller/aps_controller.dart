@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../aps_route/aps_route_build_function.dart';
 import '../aps_route/aps_route_descriptor.dart';
 import '../aps_route/aps_route_matcher.dart';
 import '../aps_snapshot.dart';
@@ -14,6 +15,9 @@ class APSController extends ChangeNotifier {
   final ApsRouteMatcher routerMatcher;
 
   /// Configuration currently used to recreate the [APSNavigator] page's list.
+  ApsSnapshot initialSnapshot;
+
+  /// Configuration currently used to recreate the [APSNavigator] page's list.
   ApsSnapshot currentSnapshot;
 
   /// List of pages used by [APSNavigator] to populate its [Navigator] instance.
@@ -26,7 +30,8 @@ class APSController extends ChangeNotifier {
 
   APSController._(ApsSnapshot initSnapshot, ApsRouteMatcher matcher)
       : this.routerMatcher = matcher,
-        this.currentSnapshot = initSnapshot;
+        this.initialSnapshot = initSnapshot,
+        this.currentSnapshot = initSnapshot.clone();
 
   ///
   /// Creates a new [APSController] given an [initialConfiguration] configuration.
@@ -91,7 +96,7 @@ class APSController extends ChangeNotifier {
     required String path,
     Map<String, dynamic> params = const {},
   }) {
-    final descriptorToAdd = _createDescriptorFrom(path: path, params: params);
+    final descriptorToAdd = _createDescriptorFrom(path, params);
 
     currentSnapshot.routesDescriptors.add(descriptorToAdd);
     notifyListeners();
@@ -111,7 +116,7 @@ class APSController extends ChangeNotifier {
 
     final pushAt = position ?? desc.length;
     final descriptionListToAdd = list.map(
-      (lp) => _createDescriptorFrom(path: lp.path, params: lp.params),
+      (lp) => _createDescriptorFrom(lp.path, lp.params),
     );
 
     desc.insertAll(pushAt, descriptionListToAdd);
@@ -122,10 +127,12 @@ class APSController extends ChangeNotifier {
   /// Returns until the root page.
   ///
   void backToRoot() {
-    final end = currentSnapshot.routesDescriptors.length;
-    if (end < 1) return;
+    final curLocation = currentSnapshot.topConfiguration.location;
+    final initialLocation = initialSnapshot.topConfiguration.location;
+    final isAlreadyAtRoot = curLocation == initialLocation;
+    if (isAlreadyAtRoot) return;
 
-    currentSnapshot.routesDescriptors.removeRange(1, end);
+    currentSnapshot = initialSnapshot.clone();
     notifyListeners();
   }
 
@@ -141,7 +148,10 @@ class APSController extends ChangeNotifier {
   /// Used internally, when the user types a new URL in the Browser.
   ///
   void browserLoadDescriptors(List<ApsRouteDescriptor> descriptors) {
-    currentSnapshot = ApsSnapshot(routesDescriptors: descriptors);
+    currentSnapshot = ApsSnapshot(
+      routesDescriptors: descriptors,
+      descriptorsWereLoadedFromBrowserHistory: true,
+    );
     notifyListeners();
   }
 
@@ -153,7 +163,14 @@ class APSController extends ChangeNotifier {
     if (noPagesToPop) return false;
 
     final d = currentSnapshot.routesDescriptors.removeLast();
-    d.popCompleter.complete(result);
+
+    if (currentSnapshot.descriptorsWereLoadedFromBrowserHistory) {
+      final nextTop = currentSnapshot.topConfiguration;
+      nextTop.values['result'] = result;
+    } else {
+      d.popCompleter.complete(result);
+    }
+
     notifyListeners();
 
     return true;
@@ -196,9 +213,9 @@ class APSController extends ChangeNotifier {
     final plainLocation = Helpers.locationWithoutQueries(desc.location);
 
     final descriptorToAdd = desc.copyWith(
-      params: params,
+      values: params,
       location: showsQueriesOnLocation
-          ? Helpers.mergeLocationAndParams(plainLocation, params)
+          ? Helpers.mergeLocationAndQueries(plainLocation, params)
           : desc.location,
     );
 
@@ -208,13 +225,22 @@ class APSController extends ChangeNotifier {
     _forceBrowserUpdateURL();
   }
 
+  // *
+  // * Private helpers
+  // *
+
   List<Page> _buildPagesUsingCurrentConfig() {
     final routeDescriptors = currentSnapshot.routesDescriptors;
     final pages = List<Page>.empty(growable: true);
 
     for (var d in routeDescriptors) {
+      print('building: $d');
       final builder = routerMatcher.getBuildFunctionForRoute(d.location);
-      final page = builder(params: d.params);
+      final data = RouteData(
+        location: d.location,
+        values: d.values,
+      );
+      final page = builder(data);
       pages.add(page);
     }
 
@@ -225,29 +251,14 @@ class APSController extends ChangeNotifier {
     Router.navigate(buildContext, () {});
   }
 
-  ApsRouteDescriptor _createDescriptorFrom({
-    required String path,
-    required Map<String, dynamic> params,
-  }) {
-    final plainLocation = Helpers.locationWithoutQueries(path);
-
-    // try to find a routeFunction to merged Path+Params
-    var location = Helpers.mergeLocationAndParams(plainLocation, params);
-    var template = routerMatcher.getTemplateForRoute(location);
-
-    // if not found, fallback to find a template to Path only
-    if (template == null) {
-      location = path;
-      template = routerMatcher.getTemplateForRoute(path);
-    }
-
-    // at least one template should be found at this point
-    if (template == null) throw 'Invalid path';
-
-    return ApsRouteDescriptor(
-      location: location,
-      template: template,
-      params: params,
+  ApsRouteDescriptor _createDescriptorFrom(
+    String path,
+    Map<String, dynamic> params,
+  ) {
+    return Helpers.createDescriptorFrom(
+      path: path,
+      queries: params,
+      routerMatcher: routerMatcher,
     );
   }
 }

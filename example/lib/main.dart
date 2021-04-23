@@ -27,11 +27,11 @@ final navigator = APSNavigator.from(
     // Shows how to include values on URL address path
     '/posts': PostListPage.route,
     '/posts/{post_id}': PostDetailsPage.route,
-    // Show how to use Internal Navigation
+    // Shows how to use Internal Navigation
     '/internal_navs': InternalNavigatorsPage.route,
-    // Show how to Push multiples Pages at a specific location
+    // Shows how to Push multiples Pages at a specific location
     '/multi_push': MultiPushPage.route,
-    // Show how to Remove multiples Page at a specific location
+    // Shows how to Remove multiples Page at a specific location
     '/multi_remove': MultiRemovePage.route,
     // Initial page
     '/': HomePage.route,

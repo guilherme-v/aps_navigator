@@ -8,8 +8,8 @@ class Tab2Page extends StatefulWidget {
   @override
   _Tab2PageState createState() => _Tab2PageState();
 
-  static Page route({Map<String, dynamic>? params}) {
-    final number = params!['number'];
+  static Page route(RouteData data) {
+    final number = data.values['number'];
     return MaterialPage(
       key: ValueKey('$number'), // Important to include a key
       child: Tab2Page(number: number),

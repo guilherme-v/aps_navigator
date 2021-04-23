@@ -5,7 +5,7 @@ class ReturnDataPage extends StatefulWidget {
   @override
   _ReturnDataPageState createState() => _ReturnDataPageState();
 
-  static Page route({Map<String, dynamic>? params}) {
+  static Page route(RouteData _) {
     return MaterialPage(
       key: ValueKey('ReturnDataPage'), // Important! Always include a key
       child: ReturnDataPage(),

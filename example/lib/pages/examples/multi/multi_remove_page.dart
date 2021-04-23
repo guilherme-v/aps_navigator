@@ -7,7 +7,7 @@ class MultiRemovePage extends StatefulWidget {
   @override
   _MultiRemovePageState createState() => _MultiRemovePageState();
 
-  static Page route({Map<String, dynamic>? params}) {
+  static Page route(RouteData _) {
     return MaterialPage(
       key: ValueKey('MultiRemovePage'), // Important! Always include a key
       child: MultiRemovePage(),

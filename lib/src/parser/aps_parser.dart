@@ -30,7 +30,9 @@ class APSParser extends RouteInformationParser<ApsParserData> {
   }
 
   @override
-  RouteInformation restoreRouteInformation(ApsParserData configuration) {
+  RouteInformation restoreRouteInformation(
+    ApsParserData configuration,
+  ) {
     Map<String, dynamic> stateToSave = {
       _descriptorsKey: configuration.descriptorsJsons
     };

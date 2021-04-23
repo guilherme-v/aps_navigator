@@ -1,3 +1,4 @@
+import 'package:aps_navigator/aps.dart';
 import 'package:flutter/material.dart';
 
 class MultiPushPage extends StatefulWidget {
@@ -7,8 +8,8 @@ class MultiPushPage extends StatefulWidget {
   @override
   _MultiPushPageState createState() => _MultiPushPageState();
 
-  static Page route({Map<String, dynamic>? params}) {
-    final number = params!['number'];
+  static Page route(RouteData data) {
+    final number = data.values['number'];
 
     return MaterialPage(
       key: ValueKey('MultiPushPage$number'), // Important! Always include a key

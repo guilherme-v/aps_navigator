@@ -8,7 +8,7 @@ class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 
-  static Page route({Map<String, dynamic>? params}) {
+  static Page route(RouteData _) {
     return MaterialPage(
       key: ValueKey('Home'), // Important to include a key
       child: HomePage(),
@@ -17,6 +17,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String? result;
+
+  @override
+  void didUpdateWidget(HomePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final params = APSNavigator.of(context).currentConfig.values;
+    result = params['result'];
+    if (result != null) _showSnackBar(result!);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,9 +91,7 @@ class _HomePageState extends State<HomePage> {
 
         if (selectedOption != null) {
           print('Selected: $selectedOption');
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(selectedOption)),
-          );
+          _showSnackBar(selectedOption);
         }
       },
     );
@@ -160,5 +168,13 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
+  }
+
+  void _showSnackBar(String message) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    });
   }
 }

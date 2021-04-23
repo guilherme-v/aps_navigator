@@ -1,3 +1,4 @@
+import 'package:aps_navigator/aps.dart';
 import 'package:flutter/material.dart';
 
 import 'internal_navigator.dart';
@@ -8,7 +9,7 @@ class InternalNavigatorsPage extends StatefulWidget {
   @override
   _InternalNavigatorsPageState createState() => _InternalNavigatorsPageState();
 
-  static Page route({Map<String, dynamic>? params}) {
+  static Page route(RouteData _) {
     return MaterialPage(
       key: ValueKey("InternalNavigators"), // Important! Always include a key
       child: InternalNavigatorsPage(),

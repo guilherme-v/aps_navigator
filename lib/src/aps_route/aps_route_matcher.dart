@@ -1,9 +1,12 @@
+import 'dart:collection';
+
+import 'package:collection/collection.dart';
 import 'package:uri/uri.dart';
 
 import 'aps_route_build_function.dart';
 
 class ApsRouteMatcher {
-  // template URL -> builder
+  /// Map template URL -> builder
   final Map<String, ApsRouteBuilderFunction> mapToBuilders;
 
   ApsRouteMatcher(this.mapToBuilders);
@@ -18,7 +21,7 @@ class ApsRouteMatcher {
       if (pathShowsQuery && patternDoNotShowsQueries) continue;
 
       final uriTemplate = UriTemplate(template);
-      final parser = UriParser(uriTemplate, queryParamsAreOptional: false);
+      final parser = UriParser(uriTemplate, queryParamsAreOptional: true);
       final patternMatchesRoute = parser.matches(uri);
 
       if (patternMatchesRoute) {
@@ -29,7 +32,7 @@ class ApsRouteMatcher {
     return null;
   }
 
-  Map<String, dynamic> getParamsFromRoute(String route) {
+  Map<String, String> getValuesFromRoute(String route) {
     final uri = Uri.parse(route);
     final allPaths = _allPathsByPathLength();
 
@@ -39,9 +42,8 @@ class ApsRouteMatcher {
       final templateMatchesRoute = parser.matches(uri);
 
       if (templateMatchesRoute) {
-        final uriParams = parser.match(uri)!.parameters;
-        final params = Map<String, dynamic>.from(uriParams);
-        return params;
+        final uriParams = parser.parse(uri);
+        return uriParams;
       }
     }
 
@@ -70,13 +72,26 @@ class ApsRouteMatcher {
   }
 
   List<String> _allPathsByPathLength() {
-    final builders = mapToBuilders.keys.toList()
-      ..sort((a, b) {
-        final pathsOnA = a.split('/').length;
-        final pathsOnB = b.split('/').length;
-        return -1 * pathsOnA.compareTo(pathsOnB);
-      });
+    final templates = mapToBuilders.keys.toList();
 
-    return builders;
+    final groups = groupBy(templates, _quantityOfPathSegments)
+      ..forEach((qntSeg, list) => list.sort(_sizeOfPath));
+
+    final allPathsSorted = _mergeAndSortByPathSize(groups);
+
+    return allPathsSorted;
+  }
+
+  int _quantityOfPathSegments(String template) => template.split('/').length;
+
+  int _sizeOfPath(String a, String b) {
+    final pathsOnA = a.length;
+    final pathsOnB = b.length;
+    return -1 * pathsOnA.compareTo(pathsOnB);
+  }
+
+  List<String> _mergeAndSortByPathSize(Map<int, List<String>> g) {
+    final m = SplayTreeMap.from(g).values.toList().reversed.expand((e) => e);
+    return List<String>.from(m);
   }
 }

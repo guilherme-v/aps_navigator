@@ -1,14 +1,15 @@
 import 'dart:async';
 
-import 'package:aps_navigator/src/aps_snapshot.dart';
-import 'package:aps_navigator/src/aps_route/aps_route_build_function.dart';
-import 'package:aps_navigator/src/aps_route/aps_route_descriptor.dart';
-import 'package:aps_navigator/src/aps_route/aps_route_matcher.dart';
-import 'package:aps_navigator/src/controller/aps_inherited_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../aps_route/aps_route_build_function.dart';
+import '../aps_route/aps_route_descriptor.dart';
+import '../aps_route/aps_route_matcher.dart';
+import '../aps_snapshot.dart';
 import '../controller/aps_controller.dart';
+import '../controller/aps_inherited_controller.dart';
+import '../helpers.dart';
 import '../parser/aps_parser.dart';
 import '../parser/aps_parser_data.dart';
 
@@ -63,13 +64,10 @@ import '../parser/aps_parser_data.dart';
 class APSNavigator extends RouterDelegate<ApsParserData> {
   final APSController controller;
   final APSNavigator? parentNavigator;
-  final String initialLocation;
-
   final List<Page<dynamic>> _blankPage = [MaterialPage(child: Container())];
 
   APSNavigator._({
     required this.controller,
-    required this.initialLocation,
     this.parentNavigator,
   });
 
@@ -170,10 +168,10 @@ class APSNavigator extends RouterDelegate<ApsParserData> {
   }) {
     final routerMatcher = ApsRouteMatcher(routes);
 
-    final initialRouteDescriptor = ApsRouteDescriptor(
-      template: routerMatcher.getTemplateForRoute(initialRoute)!,
-      location: initialRoute,
-      params: initialParams,
+    final initialRouteDescriptor = Helpers.createDescriptorFrom(
+      path: initialRoute,
+      queries: initialParams,
+      routerMatcher: routerMatcher,
     );
 
     final initialConfiguration = ApsSnapshot(
@@ -187,7 +185,6 @@ class APSNavigator extends RouterDelegate<ApsParserData> {
 
     return APSNavigator._(
       controller: controller,
-      initialLocation: initialRoute,
       parentNavigator: parentNavigator,
     );
   }
@@ -207,18 +204,14 @@ class APSNavigator extends RouterDelegate<ApsParserData> {
   }
 
   @override
-  Future<void> setInitialRoutePath(ApsParserData configuration) {
-    return setNewRoutePath(configuration);
+  Future<void> setInitialRoutePath(ApsParserData _) {
+    return setNewRoutePath(controller.initialSnapshot.toApsParserData());
   }
 
   @override
   Future<void> setNewRoutePath(ApsParserData configuration) {
-    final isInitialPath = configuration.location == initialLocation;
-
-    if (isInitialPath) {
-      final curLocation = controller.currentSnapshot.topConfiguration.location;
-      final alreadyAtRoot = curLocation == initialLocation;
-      if (!alreadyAtRoot) controller.backToRoot();
+    if (configuration.location == '/') {
+      controller.backToRoot();
       return SynchronousFuture(true);
     }
 
@@ -228,12 +221,12 @@ class APSNavigator extends RouterDelegate<ApsParserData> {
 
       final location = configuration.location;
       final template = matcher.getTemplateForRoute(location)!;
-      final params = matcher.getParamsFromRoute(location);
+      final params = matcher.getValuesFromRoute(location);
 
       final descriptorToAdd = ApsRouteDescriptor(
         location: location,
         template: template,
-        params: params,
+        values: params,
       );
 
       controller.browserPushDescriptor(descriptorToAdd);
@@ -267,13 +260,7 @@ class APSNavigator extends RouterDelegate<ApsParserData> {
               if (!route.didPop(result)) {
                 return false;
               }
-
-              // final isAChildNavigator = parentNavigator != null;
-              // if (isAChildNavigator) {
               controller.pop();
-              // } else {
-              //   controller.popUntilRouteChanges();
-              // }
               return true;
             },
           );
