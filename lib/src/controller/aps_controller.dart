@@ -6,7 +6,7 @@ import '../aps_route/aps_route_matcher.dart';
 import '../aps_snapshot.dart';
 import '../helpers.dart';
 import '../parser/aps_parser_data.dart';
-import 'aps_push_list_param.dart';
+import 'aps_push_param.dart';
 
 class APSController extends ChangeNotifier {
   /// Global key used by the [Navigator] instance created internally by [APSNavigator].
@@ -15,7 +15,6 @@ class APSController extends ChangeNotifier {
   /// Router matcher.
   final ApsRouteMatcher routerMatcher;
 
-  /// Configuration currently used to recreate the [APSNavigator] page's list.
   ApsSnapshot initialSnapshot;
 
   /// Configuration currently used to recreate the [APSNavigator] page's list.
@@ -65,7 +64,7 @@ class APSController extends ChangeNotifier {
   /// The following results in **"/static_url_example"**.
   ///
   /// ```dart
-  /// APSNavigator.of(context).pushNamed(
+  /// APSNavigator.of(context).push(
   ///   path: '/static_url_example',
   ///   params: {'tab': 'authors'},
   /// );
@@ -75,7 +74,7 @@ class APSController extends ChangeNotifier {
   /// The following results in only **"/dynamic_url_example?tab=authors"**.
   ///
   /// ```dart
-  /// APSNavigator.of(context).pushNamed(
+  /// APSNavigator.of(context).push(
   ///   path: '/dynamic_url_example',
   ///   params: {'tab': 'authors'},
   /// );
@@ -85,13 +84,13 @@ class APSController extends ChangeNotifier {
   /// The following results in only **"/posts/10"**.
   ///
   /// ```dart
-  /// APSNavigator.of(context).pushNamed(
+  /// APSNavigator.of(context).push(
   ///   path: '/posts/10',
   ///   params: {'post_id': 10},
   /// );
   /// ```
   ///
-  Future<T> pushNamed<T>({
+  Future<T> push<T>({
     required String path,
     Map<String, dynamic> params = const {},
   }) {
@@ -103,7 +102,7 @@ class APSController extends ChangeNotifier {
     return descriptorToAdd.popCompleter.future as Future<T>;
   }
 
-  void insertAll({int? position, required List<ApsPushListParam> list}) {
+  void pushAll({int? position, required List<ApsPushParam> list}) {
     final desc = currentSnapshot.routesDescriptors;
 
     // Check for valid a position
@@ -201,7 +200,7 @@ class APSController extends ChangeNotifier {
 
     currentSnapshot.routesDescriptors.removeLast();
     currentSnapshot.routesDescriptors.add(descriptorToAdd);
-    notifyListeners();
+    // notifyListeners();
     _forceBrowserUpdateURL();
   }
 

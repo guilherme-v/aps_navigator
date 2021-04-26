@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildStaticURLExample() {
     return GestureDetector(
       onTap: () {
-        APSNavigator.of(context).pushNamed(
+        APSNavigator.of(context).push(
           path: '/static_url_example',
           params: {'tab': 'books'},
         );
@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildDynamicURLExample() {
     return GestureDetector(
       onTap: () {
-        APSNavigator.of(context).pushNamed(
+        APSNavigator.of(context).push(
           path: '/dynamic_url_example',
           params: {'tab': 'books'},
         );
@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildReturnDataExample() {
     return GestureDetector(
       onTap: () async {
-        final selectedOption = await APSNavigator.of(context).pushNamed(
+        final selectedOption = await APSNavigator.of(context).push(
           path: '/return_data_example',
         );
 
@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildPostListExample() {
     return GestureDetector(
       onTap: () {
-        APSNavigator.of(context).pushNamed(
+        APSNavigator.of(context).push(
           path: '/posts',
         );
       },
@@ -113,7 +113,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildInternalNavExample() {
     return GestureDetector(
       onTap: () {
-        APSNavigator.of(context).pushNamed(
+        APSNavigator.of(context).push(
           path: '/internal_navs',
         );
       },
@@ -127,12 +127,12 @@ class _HomePageState extends State<HomePage> {
   Widget _buildMultiPushExample() {
     return GestureDetector(
       onTap: () {
-        APSNavigator.of(context).insertAll(
+        APSNavigator.of(context).pushAll(
           list: [
-            ApsPushListParam(path: '/multi_push', params: {'number': 1}),
-            ApsPushListParam(path: '/multi_push', params: {'number': 2}),
-            ApsPushListParam(path: '/multi_push', params: {'number': 3}),
-            ApsPushListParam(path: '/multi_push', params: {'number': 4}),
+            ApsPushParam(path: '/multi_push', params: {'number': 1}),
+            ApsPushParam(path: '/multi_push', params: {'number': 2}),
+            ApsPushParam(path: '/multi_push', params: {'number': 3}),
+            ApsPushParam(path: '/multi_push', params: {'number': 4}),
           ],
         );
       },
@@ -148,15 +148,15 @@ class _HomePageState extends State<HomePage> {
   Widget _buildMultiRemoveExample() {
     return GestureDetector(
       onTap: () {
-        APSNavigator.of(context).insertAll(
+        APSNavigator.of(context).pushAll(
           list: [
-            ApsPushListParam(path: '/multi_push', params: {'number': 1}),
-            ApsPushListParam(path: '/multi_push', params: {'number': 2}),
-            ApsPushListParam(path: '/multi_push', params: {'number': 3}),
-            ApsPushListParam(path: '/multi_push', params: {'number': 4}),
-            ApsPushListParam(path: '/multi_push', params: {'number': 5}),
-            ApsPushListParam(path: '/multi_push', params: {'number': 6}),
-            ApsPushListParam(path: '/multi_remove'),
+            ApsPushParam(path: '/multi_push', params: {'number': 1}),
+            ApsPushParam(path: '/multi_push', params: {'number': 2}),
+            ApsPushParam(path: '/multi_push', params: {'number': 3}),
+            ApsPushParam(path: '/multi_push', params: {'number': 4}),
+            ApsPushParam(path: '/multi_push', params: {'number': 5}),
+            ApsPushParam(path: '/multi_push', params: {'number': 6}),
+            ApsPushParam(path: '/multi_remove'),
           ],
         );
       },

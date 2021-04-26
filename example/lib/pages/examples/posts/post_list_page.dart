@@ -30,7 +30,7 @@ class _PostListPageState extends State<PostListPage> {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              APSNavigator.of(context).pushNamed(
+              APSNavigator.of(context).push(
                 // routeBuilder: PostListItemPage.route,
                 path: '/posts/$index',
                 // params: {'post_id': '$index'},

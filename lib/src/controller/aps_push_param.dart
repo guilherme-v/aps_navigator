@@ -1,8 +1,8 @@
-class ApsPushListParam {
+class ApsPushParam {
   final String path;
   final Map<String, dynamic> params;
 
-  ApsPushListParam({
+  ApsPushParam({
     required this.path,
     this.params = const {},
   });

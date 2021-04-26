@@ -1,8 +1,8 @@
 name: aps_navigator
-description: A new Flutter package project.
-version: 0.0.1
-author:
-homepage:
+description: A wrapper around Navigator 2.0 and Router/Pages API to make their use a little easier. It offers Web support and complete control of the Route Stack.
+version: 0.0.4-dev.7
+author: GuiSilva <silva.guilherme09@gmail.com>
+homepage: https://github.com/guilherme-v/aps_navigator
 
 environment:
   sdk: ">=2.12.0 <3.0.0"

@@ -48,7 +48,7 @@ class _DynamicURLPageState extends State<DynamicURLPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('BottomNavPage - Static URL Sample'),
+        title: const Text('BottomNavPage - Dynamic URL Sample'),
       ),
       body: Center(
         child: _tabs.elementAt(tabIndex),

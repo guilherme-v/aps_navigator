@@ -7,7 +7,7 @@ void main() {
 
   test('it should be able to create a new instance with default values', () {
     // arrange
-    final data = ApsPushListParam(
+    final data = ApsPushParam(
       path: location,
     );
 
@@ -21,7 +21,7 @@ void main() {
     // arrange
     final Map<String, dynamic> values = {'a': 1, 'b': 'abc', 'd': 1.2};
 
-    final data = ApsPushListParam(
+    final data = ApsPushParam(
       path: location,
       params: values,
     );

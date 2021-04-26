@@ -32,7 +32,7 @@ class _Tab2PageState extends State<Tab2Page> {
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
                 onPressed: () {
-                  APSNavigator.of(context).pushNamed(
+                  APSNavigator.of(context).push(
                     path: '/tab2',
                     params: {'number': widget.number + 1},
                   );

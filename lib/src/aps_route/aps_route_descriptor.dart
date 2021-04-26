@@ -3,20 +3,20 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-/// [ApsRouteDescriptor] includes all the information [APSNavigator] needs to create a new route (page)
+/// [ApsRouteDescriptor] includes all the information [APSNavigator] needs to create a new route ([Page]).
 class ApsRouteDescriptor<T> {
-  /// Represents the template that [location] will match. E.g.: `/path/{var1}/abc/?{?tab}`
+  /// Represents the template that [location] will match. E.g.: `/path/{var1}/abc/?{?tab}`.
   final String template;
 
-  /// The current location that this descritor will build. E.g: `/path/post_a/abc/?tab=0`
+  /// The current location that this descritor will build. E.g: `/path/post_a/abc/?tab=0`.
   final String location;
 
-  /// Values extracted from [location], based on [template]. It'll contain both path and query values
+  /// Values extracted from [location], based on [template]. It'll contain both path and query values.
   final Map<String, dynamic> values;
 
-  /// Completer returned to this 'child' page
+  /// Completer returned to this 'child' page.
   ///
-  /// This won't be serialized in browser's history, so we need to recreate this when loading pages from history
+  /// This won't be serialized in browser's history, so this is recreated when loading pages from history.
   Completer<T> popCompleter;
 
   ApsRouteDescriptor({
