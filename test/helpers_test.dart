@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('It should mergeLocationAndParams', () {
     // arrange
-    final merge = Helpers.mergeLocationAndQueries;
+    const merge = Helpers.mergeLocationAndQueries;
 
     // asserts
     expect(merge('/path', {'q1': '1'}), '/path?q1=1');
@@ -18,7 +18,7 @@ void main() {
 
   test('It should return locationWithoutQueries', () {
     // arrange
-    final remove = Helpers.locationWithoutQueries;
+    const remove = Helpers.locationWithoutQueries;
 
     // asserts
     expect(remove('/path?q1=1'), '/path');
@@ -29,7 +29,8 @@ void main() {
 
   test('It should create Descriptors', () {
     // arrange
-    final create = Helpers.createDescriptorFrom;
+    const create = Helpers.createDescriptorFrom;
+    // ignore: prefer_function_declarations_over_variables
     final builder = (RouteData _) => MaterialPage(child: Container());
     final mapToBuilders = {
       '/both/aps/{var1}/{var2}/other{?q1,q2,q3}': builder,

@@ -24,7 +24,7 @@ class ApsRouteDescriptor<T> {
     required this.location,
     this.values = const {},
     Completer<T>? completer,
-  }) : this.popCompleter = completer ?? Completer<T>();
+  }) : popCompleter = completer ?? Completer<T>();
 
   // *
   // * Generated methods
@@ -39,7 +39,7 @@ class ApsRouteDescriptor<T> {
       template: template ?? this.template,
       location: location ?? this.location,
       values: values ?? this.values,
-      completer: this.popCompleter,
+      completer: popCompleter,
     );
   }
 
@@ -53,16 +53,16 @@ class ApsRouteDescriptor<T> {
 
   factory ApsRouteDescriptor.fromMap(Map<String, dynamic> map) {
     return ApsRouteDescriptor(
-      template: map['template'],
-      location: map['location'],
-      values: Map<String, dynamic>.from(map['values']),
+      template: map['template'] as String,
+      location: map['location'] as String,
+      values: Map<String, dynamic>.from(map['values'] as Map<String, dynamic>),
     );
   }
 
   String toJson() => json.encode(toMap());
 
   factory ApsRouteDescriptor.fromJson(String source) =>
-      ApsRouteDescriptor.fromMap(json.decode(source));
+      ApsRouteDescriptor.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() =>

@@ -2,11 +2,13 @@ import 'package:aps_navigator/aps.dart';
 import 'package:flutter/material.dart';
 
 class ReturnDataPage extends StatefulWidget {
+  const ReturnDataPage({Key? key}) : super(key: key);
+
   @override
   _ReturnDataPageState createState() => _ReturnDataPageState();
 
   static Page route(RouteData _) {
-    return MaterialPage(
+    return const MaterialPage(
       key: ValueKey('ReturnDataPage'), // Important! Always include a key
       child: ReturnDataPage(),
     );
@@ -22,7 +24,7 @@ class _ReturnDataPageState extends State<ReturnDataPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Pick an option'),
+          title: const Text('Pick an option'),
         ),
         body: Center(
           child: Column(
@@ -34,7 +36,7 @@ class _ReturnDataPageState extends State<ReturnDataPage> {
                   onPressed: () {
                     APSNavigator.of(context).pop('Do!');
                   },
-                  child: Text('Do!'),
+                  child: const Text('Do!'),
                 ),
               ),
               Padding(
@@ -43,7 +45,7 @@ class _ReturnDataPageState extends State<ReturnDataPage> {
                   onPressed: () {
                     APSNavigator.of(context).pop('Or Do not.');
                   },
-                  child: Text('Or Do not!'),
+                  child: const Text('Or Do not!'),
                 ),
               ),
               Padding(
@@ -52,7 +54,7 @@ class _ReturnDataPageState extends State<ReturnDataPage> {
                   onPressed: () {
                     APSNavigator.of(context).pop('There is no try!');
                   },
-                  child: Text('There is no try!'),
+                  child: const Text('There is no try!'),
                 ),
               )
             ],

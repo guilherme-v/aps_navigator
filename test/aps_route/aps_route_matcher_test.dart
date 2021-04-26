@@ -4,15 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final builder1 = (RouteData _) => MaterialPage(child: Container());
-  final builder2 = (RouteData _) => MaterialPage(child: Container());
-  final builder3 = (RouteData _) => MaterialPage(child: Container());
-  final builder4 = (RouteData _) => MaterialPage(child: Container());
-  final builder5 = (RouteData _) => MaterialPage(child: Container());
-  final builder6 = (RouteData _) => MaterialPage(child: Container());
-  final builder7 = (RouteData _) => MaterialPage(child: Container());
-  final builder8 = (RouteData _) => MaterialPage(child: Container());
-  final builder9 = (RouteData _) => MaterialPage(child: Container());
+  MaterialPage createBuilder(RouteData data) =>
+      MaterialPage(child: Container());
+
+  final builder1 = createBuilder;
+  final builder2 = createBuilder;
+  final builder3 = createBuilder;
+  final builder4 = createBuilder;
+  final builder5 = createBuilder;
+  final builder6 = createBuilder;
+  final builder7 = createBuilder;
+  final builder8 = createBuilder;
+  final builder9 = createBuilder;
 
   final mapToBuilders = {
     '/both/aps/{var1}/{var2}/other{?q1,q2,q3}': builder9,

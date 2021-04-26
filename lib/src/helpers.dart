@@ -7,24 +7,26 @@ abstract class Helpers {
     String plainPath,
     Map<String, dynamic> queries,
   ) {
-    var pathWithParams = plainPath;
+    final pathWithParams = StringBuffer();
+    pathWithParams.write(plainPath);
 
     // Add '?' if needed
     if (queries.isNotEmpty) {
-      pathWithParams += '?';
+      pathWithParams.write('?');
     }
 
     // Add all 'param=value&' queries
-    queries.entries.forEach((entry) {
-      pathWithParams += '${entry.key}=${entry.value}&';
-    });
-
-    // remove any trailing '&'
-    if (pathWithParams.endsWith("&")) {
-      pathWithParams = pathWithParams.substring(0, pathWithParams.length - 1);
+    for (final entry in queries.entries) {
+      pathWithParams.write('${entry.key}=${entry.value}&');
     }
 
-    return pathWithParams;
+    // remove any trailing '&'
+    var locAndQueries = pathWithParams.toString();
+    if (locAndQueries.endsWith("&")) {
+      locAndQueries = locAndQueries.substring(0, locAndQueries.length - 1);
+    }
+
+    return locAndQueries;
   }
 
   static String locationWithoutQueries(String path) {
@@ -55,7 +57,7 @@ abstract class Helpers {
 
     // add queries with dynamic values first
     // then add location values (all as string), allowing it to override any query with same key
-    var values = Map<String, dynamic>()
+    final values = <String, dynamic>{}
       ..addAll(queries)
       ..addAll(routerMatcher.getValuesFromRoute(location));
 

@@ -2,13 +2,13 @@ import 'package:aps_navigator/aps.dart';
 import 'package:flutter/material.dart';
 
 class MultiRemovePage extends StatefulWidget {
-  MultiRemovePage({Key? key}) : super(key: key);
+  const MultiRemovePage({Key? key}) : super(key: key);
 
   @override
   _MultiRemovePageState createState() => _MultiRemovePageState();
 
   static Page route(RouteData _) {
-    return MaterialPage(
+    return const MaterialPage(
       key: ValueKey('MultiRemovePage'), // Important! Always include a key
       child: MultiRemovePage(),
     );
@@ -22,13 +22,13 @@ class _MultiRemovePageState extends State<MultiRemovePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Multi Remove Page'),
+        title: const Text('Multi Remove Page'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('It was pushed 6 Pages before the current one'),
+            const Text('It was pushed 6 Pages before the current one'),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
@@ -45,7 +45,7 @@ class _MultiRemovePageState extends State<MultiRemovePage> {
                     SnackBar(content: Text(msg)),
                   );
                 },
-                child: Text(
+                child: const Text(
                     'click here to remove the range: [2-4], then navigate back to see the result'),
               ),
             ),

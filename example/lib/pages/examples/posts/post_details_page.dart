@@ -5,16 +5,16 @@ import 'package:flutter/material.dart';
 class PostDetailsPage extends StatefulWidget {
   final String postId;
 
-  PostDetailsPage({Key? key, required this.postId}) : super(key: key);
+  const PostDetailsPage({Key? key, required this.postId}) : super(key: key);
 
   @override
   _PostDetailsPageState createState() => _PostDetailsPageState();
 
   static Page route(RouteData data) {
-    final postId = data.values['post_id'];
+    final postId = data.values['post_id'] as String;
 
     return MaterialPage(
-      key: ValueKey('PostDetailsPage'), // Important! Always include a key
+      key: const ValueKey('PostDetailsPage'), // Important! Always include a key
       child: PostDetailsPage(postId: postId),
     );
   }
@@ -34,10 +34,10 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
         itemCount: items.length,
         itemBuilder: (context, index) {
           return GestureDetector(
+            onTap: () {},
             child: ListTile(
               title: Text('Comment Number: ${items[index]}'),
             ),
-            onTap: () {},
           );
         },
       ),

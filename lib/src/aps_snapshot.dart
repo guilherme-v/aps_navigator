@@ -25,7 +25,7 @@ class ApsSnapshot<T> {
     return ApsSnapshot(
       routesDescriptors: routesDescriptors.map((d) => d.copyWith()).toList(),
       descriptorsWereLoadedFromBrowserHistory:
-          this.descriptorsWereLoadedFromBrowserHistory,
+          descriptorsWereLoadedFromBrowserHistory,
     );
   }
 }

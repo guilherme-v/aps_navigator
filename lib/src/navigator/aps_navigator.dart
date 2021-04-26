@@ -1,10 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../aps_route/aps_route_build_function.dart';
-import '../aps_route/aps_route_descriptor.dart';
 import '../aps_route/aps_route_matcher.dart';
 import '../aps_snapshot.dart';
 import '../controller/aps_controller.dart';
@@ -209,37 +207,8 @@ class APSNavigator extends RouterDelegate<ApsParserData> {
   }
 
   @override
-  Future<void> setNewRoutePath(ApsParserData configuration) {
-    if (configuration.location == '/') {
-      controller.backToRoot();
-      return SynchronousFuture(true);
-    }
-
-    if (configuration.isANewConfigCreatedByBrowser) {
-      // build and push a new descriptor
-      final matcher = controller.routerMatcher;
-
-      final location = configuration.location;
-      final template = matcher.getTemplateForRoute(location)!;
-      final params = matcher.getValuesFromRoute(location);
-
-      final descriptorToAdd = ApsRouteDescriptor(
-        location: location,
-        template: template,
-        values: params,
-      );
-
-      controller.browserPushDescriptor(descriptorToAdd);
-    } else {
-      // load all the previous descriptors available
-      final descriptors = configuration.descriptorsJsons
-          .map((j) => ApsRouteDescriptor.fromJson(j))
-          .toList();
-
-      controller.browserLoadDescriptors(descriptors);
-    }
-
-    return SynchronousFuture(true);
+  Future<void> setNewRoutePath(ApsParserData configuration) async {
+    controller.browserSetNewConfiguration(configuration);
   }
 
   @override
@@ -270,8 +239,9 @@ class APSNavigator extends RouterDelegate<ApsParserData> {
   }
 
   @override
-  void addListener(listener) => controller.addListener(listener);
+  void addListener(Function() listener) => controller.addListener(listener);
 
   @override
-  void removeListener(listener) => controller.removeListener(listener);
+  void removeListener(Function() listener) =>
+      controller.removeListener(listener);
 }

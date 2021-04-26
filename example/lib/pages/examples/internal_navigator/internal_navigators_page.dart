@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'internal_navigator.dart';
 
 class InternalNavigatorsPage extends StatefulWidget {
-  InternalNavigatorsPage({Key? key}) : super(key: key);
+  const InternalNavigatorsPage({Key? key}) : super(key: key);
 
   @override
   _InternalNavigatorsPageState createState() => _InternalNavigatorsPageState();
 
   static Page route(RouteData _) {
-    return MaterialPage(
+    return const MaterialPage(
       key: ValueKey("InternalNavigators"), // Important! Always include a key
       child: InternalNavigatorsPage(),
     );
@@ -23,11 +23,11 @@ class _InternalNavigatorsPageState extends State<InternalNavigatorsPage> {
   int tabIndex = 0;
 
   final List<Widget> _tabs = <Widget>[
-    InternalNavigator(
+    const InternalNavigator(
       key: ValueKey('NAV1'),
       initialRoute: '/tab1',
     ),
-    InternalNavigator(
+    const InternalNavigator(
       key: ValueKey('NAV2'),
       initialRoute: '/tab2',
     ),

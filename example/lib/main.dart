@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:aps_navigator/aps.dart';
+import 'package:flutter/material.dart';
 
 import 'pages/examples/dynamic_url_page.dart';
 import 'pages/examples/internal_navigator/internal_navigators_page.dart';
@@ -12,11 +11,10 @@ import 'pages/examples/return_data_page.dart';
 import 'pages/examples/static_url_page.dart';
 import 'pages/home_page.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 // Creates a Main ApsNavigator
 final navigator = APSNavigator.from(
-  initialRoute: "/",
   routes: {
     // Persists state on Browser's history without including it in URL Address (Query params)
     '/static_url_example': StaticURLPage.route,
@@ -39,7 +37,7 @@ final navigator = APSNavigator.from(
 );
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -5,6 +5,7 @@ import '../aps_route/aps_route_descriptor.dart';
 import '../aps_route/aps_route_matcher.dart';
 import '../aps_snapshot.dart';
 import '../helpers.dart';
+import '../parser/aps_parser_data.dart';
 import 'aps_push_list_param.dart';
 
 class APSController extends ChangeNotifier {
@@ -28,10 +29,8 @@ class APSController extends ChangeNotifier {
   /// BuildContext was used to build this APSController instance.
   late BuildContext buildContext;
 
-  APSController._(ApsSnapshot initSnapshot, ApsRouteMatcher matcher)
-      : this.routerMatcher = matcher,
-        this.initialSnapshot = initSnapshot,
-        this.currentSnapshot = initSnapshot.clone();
+  APSController._(this.initialSnapshot, this.routerMatcher)
+      : currentSnapshot = initialSnapshot.clone();
 
   ///
   /// Creates a new [APSController] given an [initialConfiguration] configuration.
@@ -137,25 +136,6 @@ class APSController extends ChangeNotifier {
   }
 
   ///
-  /// Used internally by APSNavigator, when the user types a new URL in the Browser.
-  ///
-  void browserPushDescriptor(ApsRouteDescriptor descriptor) {
-    currentSnapshot.routesDescriptors.add(descriptor);
-    notifyListeners();
-  }
-
-  ///
-  /// Used internally, when the user types a new URL in the Browser.
-  ///
-  void browserLoadDescriptors(List<ApsRouteDescriptor> descriptors) {
-    currentSnapshot = ApsSnapshot(
-      routesDescriptors: descriptors,
-      descriptorsWereLoadedFromBrowserHistory: true,
-    );
-    notifyListeners();
-  }
-
-  ///
   /// Pop top
   ///
   bool pop<T extends Object>([T? result]) {
@@ -225,6 +205,35 @@ class APSController extends ChangeNotifier {
     _forceBrowserUpdateURL();
   }
 
+  void browserSetNewConfiguration(ApsParserData configuration) {
+    if (configuration.location == '/') {
+      backToRoot();
+      return;
+    }
+
+    if (configuration.isANewConfigCreatedByBrowser) {
+      // build and push a new descriptor
+      final location = configuration.location;
+      final template = routerMatcher.getTemplateForRoute(location)!;
+      final params = routerMatcher.getValuesFromRoute(location);
+
+      final descriptorToAdd = ApsRouteDescriptor(
+        location: location,
+        template: template,
+        values: params,
+      );
+
+      _browserPushDescriptor(descriptorToAdd);
+    } else {
+      // load all the previous descriptors available
+      final descriptors = configuration.descriptorsJsons
+          .map((j) => ApsRouteDescriptor.fromJson(j))
+          .toList();
+
+      _browserLoadDescriptors(descriptors);
+    }
+  }
+
   // *
   // * Private helpers
   // *
@@ -233,8 +242,7 @@ class APSController extends ChangeNotifier {
     final routeDescriptors = currentSnapshot.routesDescriptors;
     final pages = List<Page>.empty(growable: true);
 
-    for (var d in routeDescriptors) {
-      print('building: $d');
+    for (final d in routeDescriptors) {
       final builder = routerMatcher.getBuildFunctionForRoute(d.location);
       final data = RouteData(
         location: d.location,
@@ -249,6 +257,19 @@ class APSController extends ChangeNotifier {
 
   void _forceBrowserUpdateURL() {
     Router.navigate(buildContext, () {});
+  }
+
+  void _browserPushDescriptor(ApsRouteDescriptor descriptor) {
+    currentSnapshot.routesDescriptors.add(descriptor);
+    notifyListeners();
+  }
+
+  void _browserLoadDescriptors(List<ApsRouteDescriptor> descriptors) {
+    currentSnapshot = ApsSnapshot(
+      routesDescriptors: descriptors,
+      descriptorsWereLoadedFromBrowserHistory: true,
+    );
+    notifyListeners();
   }
 
   ApsRouteDescriptor _createDescriptorFrom(

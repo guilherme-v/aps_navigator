@@ -3,13 +3,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class PostListPage extends StatefulWidget {
-  PostListPage({Key? key}) : super(key: key);
+  const PostListPage({Key? key}) : super(key: key);
 
   @override
   _PostListPageState createState() => _PostListPageState();
 
   static Page route(RouteData _) {
-    return MaterialPage(
+    return const MaterialPage(
       key: ValueKey('PostListPage'), // Important! Always include a key
       child: PostListPage(),
     );
@@ -29,9 +29,6 @@ class _PostListPageState extends State<PostListPage> {
         itemCount: items.length,
         itemBuilder: (context, index) {
           return GestureDetector(
-            child: ListTile(
-              title: Text('Post Number: ${items[index]}'),
-            ),
             onTap: () {
               APSNavigator.of(context).pushNamed(
                 // routeBuilder: PostListItemPage.route,
@@ -40,6 +37,9 @@ class _PostListPageState extends State<PostListPage> {
                 // updatePath: false,
               );
             },
+            child: ListTile(
+              title: Text('Post Number: ${items[index]}'),
+            ),
           );
         },
       ),

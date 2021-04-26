@@ -14,13 +14,13 @@ class APSParser extends RouteInformationParser<ApsParserData> {
   Future<ApsParserData> parseRouteInformation(
     RouteInformation routeInformation,
   ) {
-    ApsParserData data = ApsParserData(
+    final ApsParserData data = ApsParserData(
       location: routeInformation.location ?? '/',
     );
 
     final isANewConfigCreatedByBrowser = routeInformation.state == null;
     if (!isANewConfigCreatedByBrowser) {
-      final loadedState = routeInformation.state as Map<String, dynamic>;
+      final loadedState = routeInformation.state! as Map<String, dynamic>;
       data.descriptorsJsons = (loadedState[_descriptorsKey] as List)
           .map((e) => e as String)
           .toList();
@@ -33,7 +33,7 @@ class APSParser extends RouteInformationParser<ApsParserData> {
   RouteInformation restoreRouteInformation(
     ApsParserData configuration,
   ) {
-    Map<String, dynamic> stateToSave = {
+    final Map<String, dynamic> stateToSave = {
       _descriptorsKey: configuration.descriptorsJsons
     };
 

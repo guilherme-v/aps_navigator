@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final location = 'path/path2/abc?tab=0';
+  const location = 'path/path2/abc?tab=0';
 
   test('it should be able to create a new instance with default values', () {
     // arrange

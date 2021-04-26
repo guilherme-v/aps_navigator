@@ -6,7 +6,7 @@ void main() {
   test('it should be able to create a new instance containing default values',
       () {
     // arrange
-    final data = RouteData(location: '/path/abc?tab=0');
+    const data = RouteData(location: '/path/abc?tab=0');
 
     // asserts
     expect(data.location, '/path/abc?tab=0');

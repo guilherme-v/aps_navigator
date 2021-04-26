@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 
 class StaticURLPage extends StatefulWidget {
   final int tabIndex;
-  StaticURLPage({Key? key, required this.tabIndex}) : super(key: key);
+  const StaticURLPage({Key? key, required this.tabIndex}) : super(key: key);
 
   @override
-  _StaticURLPageState createState() => _StaticURLPageState(tabIndex);
+  _StaticURLPageState createState() => _StaticURLPageState();
 
   static Page route(RouteData data) {
     final tab = data.values['tab'] == 'books' ? 0 : 1;
 
     return MaterialPage(
-      key: ValueKey('StaticURLPage'), // Important! Always include a key
+      key: const ValueKey('StaticURLPage'), // Important! Always include a key
       child: StaticURLPage(
         tabIndex: tab,
       ),
@@ -21,14 +21,20 @@ class StaticURLPage extends StatefulWidget {
 }
 
 class _StaticURLPageState extends State<StaticURLPage> {
-  _StaticURLPageState(this.tabIndex);
+  _StaticURLPageState();
 
-  int tabIndex;
+  late int tabIndex;
 
   static const List<Widget> _tabs = <Widget>[
     Text('Index 0: Books'),
     Text('Index 1: Authors')
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    tabIndex = widget.tabIndex;
+  }
 
   @override
   void didUpdateWidget(StaticURLPage oldWidget) {

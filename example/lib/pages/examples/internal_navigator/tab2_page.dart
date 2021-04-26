@@ -9,7 +9,7 @@ class Tab2Page extends StatefulWidget {
   _Tab2PageState createState() => _Tab2PageState();
 
   static Page route(RouteData data) {
-    final number = data.values['number'];
+    final number = data.values['number'] as int;
     return MaterialPage(
       key: ValueKey('$number'), // Important to include a key
       child: Tab2Page(number: number),
@@ -37,7 +37,7 @@ class _Tab2PageState extends State<Tab2Page> {
                     params: {'number': widget.number + 1},
                   );
                 },
-                child: Text('PUSH NEW DETAIL PAGE'),
+                child: const Text('PUSH NEW DETAIL PAGE'),
               ),
             ),
           ],

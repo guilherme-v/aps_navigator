@@ -13,7 +13,7 @@ dependencies:
     sdk: flutter  
   uri: ^1.0.0
   collection: ^1.15.0
-
+  lint: ^1.0.0
 
 dev_dependencies:
   flutter_test:

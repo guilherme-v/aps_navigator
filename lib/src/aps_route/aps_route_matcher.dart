@@ -16,7 +16,7 @@ class ApsRouteMatcher {
     final allTemplatesPatterns = _allPathsByPathLength();
     final pathShowsQuery = route.contains('?');
 
-    for (var template in allTemplatesPatterns) {
+    for (final template in allTemplatesPatterns) {
       final patternDoNotShowsQueries = !template.contains('?');
       if (pathShowsQuery && patternDoNotShowsQueries) continue;
 
@@ -36,9 +36,9 @@ class ApsRouteMatcher {
     final uri = Uri.parse(route);
     final allPaths = _allPathsByPathLength();
 
-    for (var pathPattern in allPaths) {
+    for (final pathPattern in allPaths) {
       final uriTemplate = UriTemplate(pathPattern);
-      final parser = UriParser(uriTemplate, queryParamsAreOptional: false);
+      final parser = UriParser(uriTemplate);
       final templateMatchesRoute = parser.matches(uri);
 
       if (templateMatchesRoute) {
@@ -55,12 +55,12 @@ class ApsRouteMatcher {
     final allPathsPatterns = _allPathsByPathLength();
     final pathShowsQuery = route.contains('?');
 
-    for (var pathPattern in allPathsPatterns) {
+    for (final pathPattern in allPathsPatterns) {
       final patternDoNotShowsQueries = !pathPattern.contains('?');
       if (pathShowsQuery && patternDoNotShowsQueries) continue;
 
       final uriTemplate = UriTemplate(pathPattern);
-      final parser = UriParser(uriTemplate, queryParamsAreOptional: false);
+      final parser = UriParser(uriTemplate);
       final patternMatchesRoute = parser.matches(uri);
 
       if (patternMatchesRoute) {
@@ -91,7 +91,12 @@ class ApsRouteMatcher {
   }
 
   List<String> _mergeAndSortByPathSize(Map<int, List<String>> g) {
-    final m = SplayTreeMap.from(g).values.toList().reversed.expand((e) => e);
+    final m = SplayTreeMap.from(g)
+        .values
+        .toList()
+        .reversed
+        .expand((e) => e as Iterable);
+
     return List<String>.from(m);
   }
 }

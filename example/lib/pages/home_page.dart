@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 
 /// Page that contains different examples of navigation
 class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 
   static Page route(RouteData _) {
-    return MaterialPage(
+    return const MaterialPage(
       key: ValueKey('Home'), // Important to include a key
       child: HomePage(),
     );
@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   void didUpdateWidget(HomePage oldWidget) {
     super.didUpdateWidget(oldWidget);
     final params = APSNavigator.of(context).currentConfig.values;
-    result = params['result'];
+    result = params['result'] as String;
     if (result != null) _showSnackBar(result!);
   }
 
@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Navigation examples'),
+        title: const Text('Navigation examples'),
       ),
       body: ListView(
         children: [
@@ -50,89 +50,82 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildStaticURLExample() {
     return GestureDetector(
-      child: ListTile(
-        leading: Icon(Icons.web),
-        title: Text('BottomNavPage - Static URL'),
-      ),
       onTap: () {
         APSNavigator.of(context).pushNamed(
           path: '/static_url_example',
           params: {'tab': 'books'},
         );
       },
+      child: const ListTile(
+        leading: Icon(Icons.web),
+        title: Text('BottomNavPage - Static URL'),
+      ),
     );
   }
 
   Widget _buildDynamicURLExample() {
     return GestureDetector(
-      child: ListTile(
-        leading: Icon(Icons.web),
-        title: Text('BottomNavPage - Dynamic URL'),
-      ),
       onTap: () {
         APSNavigator.of(context).pushNamed(
           path: '/dynamic_url_example',
           params: {'tab': 'books'},
         );
       },
+      child: const ListTile(
+        leading: Icon(Icons.web),
+        title: Text('BottomNavPage - Dynamic URL'),
+      ),
     );
   }
 
   Widget _buildReturnDataExample() {
     return GestureDetector(
-      child: ListTile(
-        leading: Icon(Icons.web),
-        title: Text('Page that returns Data'),
-      ),
       onTap: () async {
         final selectedOption = await APSNavigator.of(context).pushNamed(
           path: '/return_data_example',
         );
 
         if (selectedOption != null) {
-          print('Selected: $selectedOption');
-          _showSnackBar(selectedOption);
+          _showSnackBar(selectedOption as String);
         }
       },
+      child: const ListTile(
+        leading: Icon(Icons.web),
+        title: Text('Page that returns Data'),
+      ),
     );
   }
 
   Widget _buildPostListExample() {
     return GestureDetector(
-      child: ListTile(
-        leading: Icon(Icons.web),
-        title: Text('Post List Page'),
-      ),
       onTap: () {
         APSNavigator.of(context).pushNamed(
           path: '/posts',
         );
       },
+      child: const ListTile(
+        leading: Icon(Icons.web),
+        title: Text('Post List Page'),
+      ),
     );
   }
 
   Widget _buildInternalNavExample() {
     return GestureDetector(
-      child: ListTile(
-        leading: Icon(Icons.navigation),
-        title: Text('Internal Navs'),
-      ),
       onTap: () {
         APSNavigator.of(context).pushNamed(
           path: '/internal_navs',
         );
       },
+      child: const ListTile(
+        leading: Icon(Icons.navigation),
+        title: Text('Internal Navs'),
+      ),
     );
   }
 
   Widget _buildMultiPushExample() {
     return GestureDetector(
-      child: ListTile(
-        leading: Icon(Icons.navigation),
-        title: Text(
-          'Multi Push Examples (tap to push 4 Pages on top of this at once)',
-        ),
-      ),
       onTap: () {
         APSNavigator.of(context).insertAll(
           list: [
@@ -143,17 +136,17 @@ class _HomePageState extends State<HomePage> {
           ],
         );
       },
+      child: const ListTile(
+        leading: Icon(Icons.navigation),
+        title: Text(
+          'Multi Push Examples (tap to push 4 Pages on top of this at once)',
+        ),
+      ),
     );
   }
 
   Widget _buildMultiRemoveExample() {
     return GestureDetector(
-      child: ListTile(
-        leading: Icon(Icons.navigation),
-        title: Text(
-          'Pushes 7 pages at once on top of this, and allow to remove pages between a range',
-        ),
-      ),
       onTap: () {
         APSNavigator.of(context).insertAll(
           list: [
@@ -167,6 +160,12 @@ class _HomePageState extends State<HomePage> {
           ],
         );
       },
+      child: const ListTile(
+        leading: Icon(Icons.navigation),
+        title: Text(
+          'Pushes 7 pages at once on top of this, and allow to remove pages between a range',
+        ),
+      ),
     );
   }
 

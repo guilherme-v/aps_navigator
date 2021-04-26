@@ -7,5 +7,5 @@ class ApsParserData {
     this.descriptorsJsons = const [],
   });
 
-  bool get isANewConfigCreatedByBrowser => this.descriptorsJsons.isEmpty;
+  bool get isANewConfigCreatedByBrowser => descriptorsJsons.isEmpty;
 }
