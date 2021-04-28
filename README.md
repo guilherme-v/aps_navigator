@@ -1,18 +1,40 @@
-# APS Navigator
+# APS Navigator - App Pagination System
 
+[![build](https://github.com/guilherme-v/aps_navigator/workflows/ci.yml/badge.svg)](https://github.com/guilherme-v/aps_navigator/actions)
 [![style: lint](https://img.shields.io/badge/style-lint-4BC0F5.svg)](https://pub.dev/packages/lint)
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
+[![codecov](https://codecov.io/gh/guilherme-v/aps_navigator/branch/develop/graph/badge.svg)](https://codecov.io/gh/guilherme-v/aps_navigator)
 
-This library is just a wrapper around Navigator 2.0 and Router/Pages API to make their use a little easier.
+This library is just a wrapper around Navigator 2.0 and Router/Pages API that tries to make their use easier:
 
-## Basic feature set
+## :wrench: Basic feature set
 
-- Web support - back/forward buttons, URL updates, recover app state from web history.
-- Gives you control of Route Stack - add/remove Pages at the Middle, add multiples Pages at once, remove a range of pages at once.
-- Handles Operational System events.
-- Internal Navigators.
-  
-## Overview
+:rowboat: What we've tried to achieve:
+
+- Simple API
+- Easy setup
+- Minimal amount of "new classes types" to learn:
+  - No need to extend(or implement) anything
+- Web support (check the images in the following sections):
+  - Back/Forward buttons
+  - Dynamic URLs
+  - Static URLs
+  - Recover app state from web history
+- Control of Route Stack:
+  - Add/remove Pages at a specific position
+  - Add multiples Pages at once
+  - Remove a range of pages at once
+- Handles Operational System events
+- Internal(Nested) Navigators
+
+:warning: What we didn't try to achieve:
+
+- To use code generation
+  - Don't get me wrong. Code generation is a fantastic technique that makes code clear and coding faster - we have great libraries that are reference in the community and use it
+  - The thing is: It doesn't seems natural to me have to use this kind of procedure for something "basic" as navigation
+- To use Strongly-typed arguments passing
+
+## :eyes: Overview
 
 ### 1 - Create the Navigator and define the routes:
 
@@ -25,7 +47,7 @@ final navigator = APSNavigator.from(
 );
 ```
 
-### 2 -  Configure MaterialApp to use it:
+### 2 - Configure MaterialApp to use it:
 
 ```dart
 class MyApp extends StatelessWidget {
@@ -41,7 +63,7 @@ class MyApp extends StatelessWidget {
 }
 ```
 
-### 3 - Create the widget Page:
+### 3 - Create the widget Page (route):
 
 ```dart
 class DynamicURLPage extends StatefulWidget {
@@ -51,8 +73,7 @@ class DynamicURLPage extends StatefulWidget {
   @override
   _DynamicURLPageState createState() => _DynamicURLPageState();
 
-  // You don't need to use a static function as Builder, 
-  // but it seems to be a good way to organize things   
+  // Builder function
   static Page route(RouteData data) {
     final tab = data.values['tab'] == 'books' ? 0 : 1;
     return MaterialPage(
@@ -63,7 +84,11 @@ class DynamicURLPage extends StatefulWidget {
 }
 ```
 
-### 4 - Navigate to the page:
+- You don't need to use a static function as PageBuilder, but it seems to be a good way to organize things.
+- Important: **AVOID** using '**const**' keyword at `MaterialPage` or `DynamicURLPage` levels, or Pop may not work correctly with Web History.
+- Important: **Always** include a Key.
+
+### 4 - Navigate to it:
 
 ```dart
  APSNavigator.of(context).push(
@@ -73,10 +98,11 @@ class DynamicURLPage extends StatefulWidget {
 ```
 
 - The browser's address bar will display: `/dynamic_url_example?tab=books`.
-- The navigator will create the Page and put it at the top of the Route Stack.
-- The following sections describe better the above steps.
+- The `Page` will be created and put at the top of the Route Stack.
 
-## Usage
+The following sections describe better the above steps.
+
+## :massage: Usage
 
 ### 1 - Creating the Navigator and defining the Routes:
 
@@ -94,7 +120,8 @@ final navigator = APSNavigator.from(
     '/static_url_example': PageBuilder..,
 
     // Defines the location (and queries): '/dynamic_url_example?tab=(tab_value)&other=(other_value)'
-    '/dynamic_url_example{?tab,other}': PageBuilder.., // Important: Notice that the '?' is only included once
+    // Important: Notice that the '?' is only 
+    '/dynamic_url_example{?tab,other}': PageBuilder..,
 
     // Defines the location (and path variables): '/posts' and '/posts/(post_id_value)'
     '/posts': PageBuilder..,
@@ -109,19 +136,19 @@ final navigator = APSNavigator.from(
 );
 ```
 
-`Routes` is just a map between `Templates` and `Page Builders`:
+`routes` is just a map between `Templates` and `Page Builders`:
 
-- `Templates` are simple strings with predefined markers to Path ({a}) and Query({?a,b,c..}) values.
-- `Page Builders` are functions that return a Page and receive a `RouteData`. Check the section 3 bellow.
+- :postbox: `Templates` are simple strings with predefined markers to Path (`{a}`) and Query(`{?a,b,c..}`) values.
+- :house: `Page Builders` are plain functions that return a `Page` and receive a `RouteData`. Check the section 3 bellow.
 
 Given the configuration above, the app will open at: `/dynamic_url_example?tab=1`.
 
 ### 2 -  Configure MaterialApp:
 
-After creating a Navigator:
+After creating a Navigator, we need to set it up to be used:
 
-- Set it as `MaterialApp.router.routeDelegate`.
-- Remember to also add the `MaterialApp.router.routeInformationParser`:
+- :one: Set it as `MaterialApp.router.routeDelegate`.
+- :two: Remember to also add the `MaterialApp.router.routeInformationParser`:
 
 ```dart
 class MyApp extends StatelessWidget {
@@ -137,17 +164,17 @@ class MyApp extends StatelessWidget {
 }
 ```
 
-### 3 - Creating the widget Page:
+### 3 - Creating the widget Page(route):
 
-When building a route:
+When building a `Page`:
 
-- The library matches address `templates` with the current address. E.g.:
-  - Template: `/dynamic_url_example/{id}{?tab,other}'`
-  - Address: `/dynamic_url_example/10?tab=1&other=abc`
-- All *paths* and *queries* values are extracted and included in a `RouteData.data` instance. E.g.:
+- :one: The library tries to match the address `templates` with the current address. E.g.:
+  - :postbox: Template: `/dynamic_url_example/{id}{?tab,other}'`
+  - :house: Address: `/dynamic_url_example/10?tab=1&other=abc`
+- :two: All *paths* and *queries* values are extracted and included in a `RouteData.data` instance. E.g.:
   - `{'id': '10', 'tab': '1', 'other': 'abc'}`
-- This istance is passed as param to the `PageBuilder` function - `static Page route(RouteData data)`...
-- A new Page instance is created and included at the Route Stack - you check that easily using the dev tools.
+- :three: This istance is passed as param to the `PageBuilder` function - `static Page route(RouteData data)`...
+- :four: A new Page instance is created and included at the Route Stack - you check that easily using the dev tools.
 
 ```dart
 class DynamicURLPage extends StatefulWidget {
@@ -169,14 +196,14 @@ class DynamicURLPage extends StatefulWidget {
 }
 ```
 
-### 4 - Navigating to the pages:
+### 4 - Navigating to Pages:
 
 Example Link: [All Navigating Examples](https://github.com/guilherme-v/aps_navigator/blob/develop/example/lib/pages/home_page.dart)
 
-4.1 - To navigate to a route with queries variables:
+4.1 - To navigate to a route with **queries variables**:
 
-- Template: `/dynamic_url_example{?tab,other}`
-- Address:  `/dynamic_url_example?tab=books&other=abc`
+- :postbox: Template: `/dynamic_url_example{?tab,other}`
+- :house: Address:  `/dynamic_url_example?tab=books&other=abc`
 
 ```dart
  APSNavigator.of(context).push(
@@ -185,10 +212,10 @@ Example Link: [All Navigating Examples](https://github.com/guilherme-v/aps_navig
  );
 ```
 
-4.2 - To navigate to a route with path variables:
+4.2 - To navigate to a route with **path variables**:
 
-- Template: `/posts/{post_id}`
-- Address:  `/posts/10`
+- :postbox: Template: `/posts/{post_id}`
+- :house: Address:  `/posts/10`
 
 ```dart
  APSNavigator.of(context).push(
@@ -196,10 +223,10 @@ Example Link: [All Navigating Examples](https://github.com/guilherme-v/aps_navig
  );
 ```
 
-You can also include params that aren't used as queries variables:
+4.3 - You can also include params that **aren't** used as queries variables:
 
-- Template: `/static_url_example`
-- Address:  `/static_url_example`
+- :postbox: Template: `/static_url_example`
+- :house: Address:  `/static_url_example`
 
 ```dart
  APSNavigator.of(context).push(
@@ -210,7 +237,7 @@ You can also include params that aren't used as queries variables:
 
 ---
 
-## Details
+## :wine_glass: Details
 
 ### 1. Dynamic URLs Example
 
@@ -244,7 +271,7 @@ When using dynamic URLs, changing the app's state also changes the browser's URL
   }
 ```
 
-What is important to know:
+:sleepy: What is important to know:
 
 - Current limitation: Any value used at URL must be saved as `string`.
 - Don't forget to include a `Key` on the `Page` created by the `PageBuilder` to everything works properly.
@@ -280,7 +307,7 @@ When using static URLs, changing the app's state doesn't change the browser's UR
   }
 ```
 
-What is important to know:
+:sleepy: What is important to know:
 
 - Don't forget to include a `Key` on the `Page` created by the `PageBuilder` to everything works properly.
 
@@ -306,7 +333,7 @@ Pop returning the data:
   APSNavigator.of(context).pop('Do!');
 ```
 
-What is important to know:
+:sleepy: What is important to know:
 
 - Data will only be returned once.
 - In case of user navigate your app and back again using the browser's history, the result will be returned at `didUpdateWidget` method as `result,` instead of `await` call.
@@ -345,7 +372,7 @@ Push a list of the Pages at once:
 
 In the example above `ApsPushParam(path: '/multi_push', params: {'number': 4}),` will be the new top.
 
-What is important to know:
+:sleepy: What is important to know:
 
 - You don't necessarily have to add at the top; you can use the `position` param to add the routes at the middle of Route Stack.
 - Don't forget to include a `Key` on the `Page` created by the `PageBuilder` to everything works properly.
@@ -364,7 +391,7 @@ Remove all the Pages you want given a range:
   APSNavigator.of(context).removeRange(start: 2, end: 5);
 ```
 
-### 6. Internal Navigator
+### 6. Internal (Nested) Navigators
 
 Example Link: [Internal Navigator Example](https://github.com/guilherme-v/aps_navigator/blob/develop/example/lib/pages/examples/internal_navigator/internal_navigator.dart)
 
@@ -411,16 +438,17 @@ class _InternalNavigatorState extends State<InternalNavigator> {
 }
 ```
 
-What is important to know:
+:sleepy: What is important to know:
 
 - Current limitation: Browser's URL won't update based on internal navigator state
 
 ## Warning & Suggestions
 
-- Although this package is already useful, it's still in the Dev stage.
-- I'm not sure if creating yet another navigating library is something good - we already have a lot of confusion around it today.
-- This lib is not back-compatible with the old official Navigation API - at least for now (Is it worth it?).
-- Do you have any ideas or found a bug? Fell free to open an issue :)
+- :construction: Although this package is already useful, it's still in the **Dev stage**.
+- :stuck_out_tongue: I'm not sure if creating yet another navigating library is something good - we already have a lot of confusion around it today.
+- :hankey: This lib is not back-compatible with the old official Navigation API - at least for now (Is it worth it?).
+- :bug: Do you have any ideas or found a bug? Fell free to open an issue! :)
+- :information_desk_person: Do you want to know the current development stage? Check the [Project's Roadmap](https://github.com/guilherme-v/aps_navigator/projects/1).
 
 ## Maintainers
 
