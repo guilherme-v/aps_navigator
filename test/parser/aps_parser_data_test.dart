@@ -1,4 +1,4 @@
-import 'package:aps_navigator/aps.dart';
+import 'package:aps_navigator/aps_navigator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 

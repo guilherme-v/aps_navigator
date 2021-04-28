@@ -1,4 +1,4 @@
-import 'package:aps_navigator/aps.dart';
+import 'package:aps_navigator/aps_navigator.dart';
 
 import 'aps_route/aps_route_descriptor.dart';
 

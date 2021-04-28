@@ -1,4 +1,4 @@
-import 'package:aps_navigator/aps.dart';
+import 'package:aps_navigator/aps_navigator.dart';
 import 'package:flutter/material.dart';
 
 import 'pages/examples/dynamic_url_page.dart';
