@@ -15,7 +15,7 @@ void main() {
 
     // asserts
     expect(data.routesDescriptors, routesDescriptors);
-    expect(data.descriptorsWereLoadedFromBrowserHistory, isFalse);
+    expect(data.popWasRestored, isFalse);
     expect(data.topConfiguration, routesDescriptors.last);
     expect(data.rootConfiguration, routesDescriptors.first);
 
@@ -29,8 +29,8 @@ void main() {
     final clone = data.clone();
     expect(clone.routesDescriptors, data.routesDescriptors);
     expect(
-      clone.descriptorsWereLoadedFromBrowserHistory,
-      data.descriptorsWereLoadedFromBrowserHistory,
+      clone.popWasRestored,
+      data.popWasRestored,
     );
   });
 }

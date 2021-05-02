@@ -1,29 +1,11 @@
 import 'package:aps_navigator/aps_navigator.dart';
-import 'package:aps_navigator/src/aps_route/aps_route_descriptor.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../test_utils/test_utils.dart';
 
 void main() {
   const loc = 'path/to/something?tab=1&other=2';
-  final descriptors = [
-    ApsRouteDescriptor(location: '/a', template: '/a', values: const {}),
-    ApsRouteDescriptor(location: '/a/b', template: '/a/b', values: const {}),
-    ApsRouteDescriptor(
-      location: '/a/b/c',
-      template: '/a/b/{var2}',
-      values: const {'var2': 'c'},
-    ),
-    ApsRouteDescriptor(
-      location: '/a/b/c/d?x=1&z=2',
-      template: '/a/b/{var2}/d{?x,y}',
-      values: const {'var2': 'c'},
-    ),
-    ApsRouteDescriptor(
-      location: loc,
-      template: '/path/to/something{?tab,other}',
-      values: const {'tab': '1', 'other': '2'},
-    )
-  ].map((d) => d.toJson()).toList();
-
+  final descriptors = TestUtils.createDescriptorsJson(top: loc);
   final configuration = ApsParserData(
     location: loc,
     descriptorsJsons: descriptors,
@@ -36,7 +18,8 @@ void main() {
     // asserts
     final routeInfo = parser.restoreRouteInformation(configuration);
     expect(routeInfo.location, configuration.location);
-    expect(routeInfo.state, {'descriptors': configuration.descriptorsJsons});
+    expect(routeInfo.state,
+        {APSParser.descriptorsKey: configuration.descriptorsJsons});
   });
 
   test('it should be able to parse RouteInformation properly', () async {
