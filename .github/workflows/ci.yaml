@@ -1,5 +1,5 @@
 name: Build
-on: [pull_request]
+on: [push, pull_request]
 jobs:
   flutter_test_and_analyze:
     name: Run flutter test and analyze
