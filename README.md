@@ -1,9 +1,9 @@
 # APS Navigator - App Pagination System
 
-[![build](https://github.com/guilherme-v/aps_navigator/workflows/ci.yml/badge.svg)](https://github.com/guilherme-v/aps_navigator/actions)
+[![build](https://github.com/guilherme-v/aps_navigator/actions/workflows/ci.yaml/badge.svg)](https://github.com/guilherme-v/aps_navigator/actions)
+[![codecov](https://codecov.io/gh/guilherme-v/aps_navigator/branch/develop/graph/badge.svg)](https://codecov.io/gh/guilherme-v/aps_navigator)
 [![style: lint](https://img.shields.io/badge/style-lint-4BC0F5.svg)](https://pub.dev/packages/lint)
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
-[![codecov](https://codecov.io/gh/guilherme-v/aps_navigator/branch/develop/graph/badge.svg)](https://codecov.io/gh/guilherme-v/aps_navigator)
 
 This library is just a wrapper around Navigator 2.0 and Router/Pages API that tries to make their use easier:
 
