@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../aps_route/aps_route_build_function.dart';
 import '../aps_route/aps_route_matcher.dart';
+import '../aps_route/route_data.dart';
 import '../aps_snapshot.dart';
 import '../controller/aps_controller.dart';
 import '../controller/aps_inherited_controller.dart';
@@ -11,8 +11,7 @@ import '../helpers.dart';
 import '../parser/aps_parser.dart';
 import '../parser/aps_parser_data.dart';
 
-///
-/// APS implementation of [RouterDelegate].
+/// The APS lib implementation of a [RouterDelegate].
 ///
 /// It:
 /// - Creates an internal [Navigator] Widget and handles it's [Pages] updates.
@@ -41,9 +40,6 @@ import '../parser/aps_parser_data.dart';
 /// }
 ///
 /// // 3 - Prepare your Widget to be used as a Route.
-/// //
-/// // It should return any Widget that extends a Page<T>.
-/// // Recommendation is to use a Key to avoid problems.
 /// class HomePage extends StatefulWidget {
 ///  HomePage({Key? key}) : super(key: key);
 ///
@@ -52,8 +48,10 @@ import '../parser/aps_parser_data.dart';
 ///
 ///  // You don't need to use a static method here, but it's a nice way of organizing things.
 ///  static Page route({Map<String, dynamic>? params}) {
+///    // * Important: AVOID using 'const' keyword at "MaterialPage" or "HomePage" levels,
+///    // * or Pop may not work properly with Web History
 ///    return MaterialPage(
-///      key: ValueKey('Home'), // Always include a key
+///      key: const ValueKey('Home'), //* Important: Always include a key here!
 ///      child: HomePage(),
 ///    );
 ///  }
@@ -99,7 +97,7 @@ class APSNavigator extends RouterDelegate<ApsParserData> {
   ///  }
   BackButtonDispatcher? backButtonDispatcher;
 
-  /// Returns the [context] closest [APSController] instance
+  /// Returns the [APSController] instance closest [context].
   static APSController of(BuildContext context) => context
       .dependOnInheritedWidgetOfExactType<APSInheritedController>()!
       .controller;
@@ -147,15 +145,14 @@ class APSNavigator extends RouterDelegate<ApsParserData> {
   /// Example of addresses that can be used in [routeBuilders]:
   ///
   /// ```dart
-  /// // no path or query variable
+  /// // route template with no path or query variable
   /// '/posts': PostListPage.route,
   ///
-  /// // path variable
+  /// // route template with path variable
   /// '/posts/{post_id}': PostListItemPage.route,
   ///
-  /// // queries variable
+  /// // route template with queries variable
   /// '/bottom_nav{?var1,var2}': BottomNavPage.route,
-  ///
   /// ```
   ///
   factory APSNavigator.from({
@@ -189,7 +186,7 @@ class APSNavigator extends RouterDelegate<ApsParserData> {
 
   @override
   ApsParserData? get currentConfiguration {
-    // Child navigators won't report back to browser history
+    // Child navigators won't report back to browser's history
     final isAChildNavigator = parentNavigator != null;
     if (isAChildNavigator) return null;
 
@@ -202,8 +199,16 @@ class APSNavigator extends RouterDelegate<ApsParserData> {
   }
 
   @override
-  Future<void> setInitialRoutePath(ApsParserData _) {
-    return setNewRoutePath(controller.initialSnapshot.toApsParserData());
+  Future<void> setInitialRoutePath(ApsParserData configuration) async {
+    // 'setInitialRoutePath' is tricky,
+    // Initial Route is any kind of route the triggered app opening.
+    // - user opens the app normally
+    // - user opens the app using an browser's history entry
+    // - ...
+    //
+    return setNewRoutePath(
+      configuration.copyWith(isUserOpeningAppForTheFirstTime: true),
+    );
   }
 
   @override

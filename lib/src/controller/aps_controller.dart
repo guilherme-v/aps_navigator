@@ -1,29 +1,34 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../aps_route/aps_route_build_function.dart';
 import '../aps_route/aps_route_descriptor.dart';
 import '../aps_route/aps_route_matcher.dart';
+import '../aps_route/route_data.dart';
 import '../aps_snapshot.dart';
 import '../helpers.dart';
 import '../parser/aps_parser_data.dart';
 import 'aps_push_param.dart';
 
+/// Class that allows navigation control.
+///
 class APSController extends ChangeNotifier {
-  /// Global key used by the [Navigator] instance created internally by [APSNavigator].
+  /// Global key set to the [Navigator] instance created internally by [APSNavigator].
   final navigatorKey = GlobalKey<NavigatorState>();
 
   /// Router matcher.
   final ApsRouteMatcher routerMatcher;
 
+  /// First snapshot created by this controller.
   ApsSnapshot initialSnapshot;
 
-  /// Configuration currently used to recreate the [APSNavigator] page's list.
+  /// Snapshot used to create the current route/page stack.
   ApsSnapshot currentSnapshot;
 
-  /// List of pages used by [APSNavigator] to populate its [Navigator] instance.
-  List<Page> get pages => List.unmodifiable(_buildPagesUsingCurrentConfig());
-
+  /// Shortcut to `currentConfig.topConfiguration`.
   ApsRouteDescriptor get currentConfig => currentSnapshot.topConfiguration;
+
+  /// List of pages used by [APSNavigator] to populate its internal [Navigator]'s page list.
+  List<Page> get pages => List.unmodifiable(_buildPagesUsingCurrentConfig());
 
   /// BuildContext was used to build this APSController instance.
   late BuildContext buildContext;
@@ -41,10 +46,9 @@ class APSController extends ChangeNotifier {
     return APSController._(initialConfiguration, routerMatcher);
   }
 
-  ///
   /// Pushes a new page to the top.
   ///
-  /// The [path] should match one of those configured when creating the [APSNavigator].
+  /// [path] should match one of those templates configured when creating the [APSNavigator] instance.
   ///
   /// Example:
   ///
@@ -61,7 +65,7 @@ class APSController extends ChangeNotifier {
   /// );
   ///```
   ///
-  /// The following results in **"/static_url_example"**.
+  /// The following navigates to: **"/static_url_example"**.
   ///
   /// ```dart
   /// APSNavigator.of(context).push(
@@ -71,7 +75,7 @@ class APSController extends ChangeNotifier {
   /// ```
   ///
   ///
-  /// The following results in only **"/dynamic_url_example?tab=authors"**.
+  /// The following navigates to: **"/dynamic_url_example?tab=authors"**.
   ///
   /// ```dart
   /// APSNavigator.of(context).push(
@@ -81,12 +85,11 @@ class APSController extends ChangeNotifier {
   /// ```
   ///
   ///
-  /// The following results in only **"/posts/10"**.
+  /// The following navigates to: **"/posts/10"**.
   ///
   /// ```dart
   /// APSNavigator.of(context).push(
   ///   path: '/posts/10',
-  ///   params: {'post_id': 10},
   /// );
   /// ```
   ///
@@ -102,13 +105,69 @@ class APSController extends ChangeNotifier {
     return descriptorToAdd.popCompleter.future as Future<T>;
   }
 
+  /// Pop top [Page]
+  ///
+  /// The result returned by the page is returned as expected:
+  /// ```dart
+  /// final result = await APSNavigator.of(context).push(
+  ///     path: '...',
+  /// );
+  /// ```
+  ///
+  /// But if the User uses the web history to go back to a page that pops a result,
+  /// the result is returned at `didUpdateWidget`. E.g.:
+  /// ```dart
+  /// @override
+  /// void didUpdateWidget(HomePage oldWidget) {
+  ///   super.didUpdateWidget(oldWidget);
+  ///   final params = APSNavigator.of(context).currentConfig.values;
+  ///   result = params['result'] as String?;
+  ///   if (result != null) _showSnackBar(result!);
+  /// }
+  /// ```
+  ///
+  bool pop<T extends Object>([T? result]) {
+    final noPagesToPop = currentSnapshot.routesDescriptors.length <= 1;
+    if (noPagesToPop) return false;
+
+    final d = currentSnapshot.routesDescriptors.removeLast();
+
+    if (currentSnapshot.popWasRestored) {
+      final newTop = currentSnapshot.topConfiguration;
+      newTop.values['result'] = result;
+    } else {
+      d.popCompleter.complete(result);
+    }
+
+    notifyListeners();
+
+    return true;
+  }
+
+  /// Pushes a list of Pages at the specified position.
+  ///
+  /// [position] should be in the range: [0 <= position <= [apsController.pages.length]].
+  /// if no [position] is given, the list will be added at the top of the current Page Stack.
+  ///
+  /// ```dart
+  /// APSNavigator.of(context).pushAll(
+  ///   position: ..,
+  ///   list: [
+  ///     ApsPushParam(path: '/a', params: {'p1': 1}),
+  ///     ApsPushParam(path: '/b'),
+  ///     ApsPushParam(path: '/c', params: {'number': 3}),
+  ///     ApsPushParam(path: '/d', params: {'any_other': 'asdf'}),
+  ///   ],
+  /// );
+  /// ```
+  ///
   void pushAll({int? position, required List<ApsPushParam> list}) {
     final desc = currentSnapshot.routesDescriptors;
 
     // Check for valid a position
     if (position != null) {
-      final isPositionValid = position >= 0 || position <= desc.length - 1;
-      final msg = 'Trying to push List at invalid position: $position';
+      final isPositionValid = position >= 0 && position <= desc.length - 1;
+      final msg = 'Trying to push List of Pages at invalid position: $position';
       if (!isPositionValid) throw msg;
     }
 
@@ -121,8 +180,9 @@ class APSController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// It navigates back to the Root (the route provided to [APSNavigator.from.initialRoute]).
   ///
-  /// Returns until the root page.
+  /// It won't call the [PopCompleter] of the pages above it.
   ///
   void backToRoot() {
     final curLocation = currentSnapshot.topConfiguration.location;
@@ -134,28 +194,7 @@ class APSController extends ChangeNotifier {
     notifyListeners();
   }
 
-  ///
-  /// Pop top
-  ///
-  bool pop<T extends Object>([T? result]) {
-    final noPagesToPop = currentSnapshot.routesDescriptors.length <= 1;
-    if (noPagesToPop) return false;
-
-    final d = currentSnapshot.routesDescriptors.removeLast();
-
-    if (currentSnapshot.descriptorsWereLoadedFromBrowserHistory) {
-      final nextTop = currentSnapshot.topConfiguration;
-      nextTop.values['result'] = result;
-    } else {
-      d.popCompleter.complete(result);
-    }
-
-    notifyListeners();
-
-    return true;
-  }
-
-  /// Removes a range of Pages from stack history.
+  /// Removes a range of Pages from the Page Stack.
   ///
   /// Removes the elements with positions greater than or equal to [start]
   /// and less than [end], from the list.
@@ -168,16 +207,18 @@ class APSController extends ChangeNotifier {
   void removeRange({required int start, required int end}) {
     final desc = currentSnapshot.routesDescriptors;
 
-    if (start < 0 || end >= desc.length - 1) throw 'Invalid range';
+    if (start < 0 || end >= desc.length) {
+      throw 'Trying to use an invalid range when removing Pages';
+    }
 
     desc.removeRange(start, end);
     notifyListeners();
   }
 
+  /// It requests the Browser to update its address bar based on the given params.
   ///
-  /// Updates the current route params.
-  ///
-  /// Example, the follows generates: **"baseURL?tab=books"** or **"baseURL?tab=authors"**.
+  /// Example, given a route templated configured as `'/dynamic_url_example{?tab}'`,
+  /// the following generates: **"baseURL?tab=books"** or **"baseURL?tab=authors"**.
   ///
   /// ```dart
   ///  final aps = APSNavigator.of(context);
@@ -200,18 +241,32 @@ class APSController extends ChangeNotifier {
 
     currentSnapshot.routesDescriptors.removeLast();
     currentSnapshot.routesDescriptors.add(descriptorToAdd);
-    // notifyListeners();
+
     _forceBrowserUpdateURL();
   }
 
+  /// Configures this [ApsController] instance to use an [ApsSnapshot] created based on the given [configuration].
+  ///
+  /// [configuration] is usually an [ApsParserData] that was created by the browser or recovered from its history.
   void browserSetNewConfiguration(ApsParserData configuration) {
     if (configuration.location == '/') {
       backToRoot();
       return;
     }
 
-    if (configuration.isANewConfigCreatedByBrowser) {
-      // build and push a new descriptor
+    if (configuration.hasPageDescriptorsAvailableFromWebHistory) {
+      // load all descriptors and create a new Snapshot from them
+      final descriptors = configuration.descriptorsJsons
+          .map((j) => ApsRouteDescriptor.fromJson(j))
+          .toList();
+
+      currentSnapshot = ApsSnapshot(
+        routesDescriptors: descriptors,
+        popWasRestored: true,
+      );
+      notifyListeners();
+    } else {
+      // build a new descriptor and upate the current Snapshot
       final location = configuration.location;
       final template = routerMatcher.getTemplateForRoute(location)!;
       final params = routerMatcher.getValuesFromRoute(location);
@@ -222,14 +277,11 @@ class APSController extends ChangeNotifier {
         values: params,
       );
 
-      _browserPushDescriptor(descriptorToAdd);
-    } else {
-      // load all the previous descriptors available
-      final descriptors = configuration.descriptorsJsons
-          .map((j) => ApsRouteDescriptor.fromJson(j))
-          .toList();
+      currentSnapshot.routesDescriptors.add(descriptorToAdd);
+      currentSnapshot.popWasRestored =
+          configuration.isUserOpeningAppForTheFirstTime;
 
-      _browserLoadDescriptors(descriptors);
+      notifyListeners();
     }
   }
 
@@ -254,21 +306,8 @@ class APSController extends ChangeNotifier {
     return List.unmodifiable(pages);
   }
 
-  void _forceBrowserUpdateURL() {
-    Router.navigate(buildContext, () {});
-  }
-
-  void _browserPushDescriptor(ApsRouteDescriptor descriptor) {
-    currentSnapshot.routesDescriptors.add(descriptor);
-    notifyListeners();
-  }
-
-  void _browserLoadDescriptors(List<ApsRouteDescriptor> descriptors) {
-    currentSnapshot = ApsSnapshot(
-      routesDescriptors: descriptors,
-      descriptorsWereLoadedFromBrowserHistory: true,
-    );
-    notifyListeners();
+  void _forceBrowserUpdateURL({VoidCallback? callback}) {
+    Router.navigate(buildContext, callback ?? () {});
   }
 
   ApsRouteDescriptor _createDescriptorFrom(

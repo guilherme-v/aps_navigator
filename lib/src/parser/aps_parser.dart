@@ -8,22 +8,24 @@ import 'aps_parser_data.dart';
 /// [APSNavigator] instance of [RouteInformationParser<T>]
 class APSParser extends RouteInformationParser<ApsParserData> {
   const APSParser();
-  static const _descriptorsKey = 'descriptors';
+  static const descriptorsKey = '_aps_pages_descriptors';
 
   @override
   Future<ApsParserData> parseRouteInformation(
     RouteInformation routeInformation,
   ) {
-    final ApsParserData data = ApsParserData(
+    var data = ApsParserData(
       location: routeInformation.location ?? '/',
     );
 
-    final isANewConfigCreatedByBrowser = routeInformation.state == null;
-    if (!isANewConfigCreatedByBrowser) {
-      final loadedState = routeInformation.state! as Map<String, dynamic>;
-      data.descriptorsJsons = (loadedState[_descriptorsKey] as List)
-          .map((e) => e as String)
-          .toList();
+    final loadedState = routeInformation.state as Map<String, dynamic>? ?? {};
+    final hasApsData = loadedState.containsKey(descriptorsKey);
+    if (hasApsData) {
+      data = data.copyWith(
+        descriptorsJsons: (loadedState[descriptorsKey] as List)
+            .map((e) => e as String)
+            .toList(),
+      );
     }
 
     return SynchronousFuture(data);
@@ -34,7 +36,7 @@ class APSParser extends RouteInformationParser<ApsParserData> {
     ApsParserData configuration,
   ) {
     final Map<String, dynamic> stateToSave = {
-      _descriptorsKey: configuration.descriptorsJsons
+      descriptorsKey: configuration.descriptorsJsons
     };
 
     final routeInfo = RouteInformation(
