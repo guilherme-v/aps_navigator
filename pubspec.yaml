@@ -8,11 +8,11 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
+  collection: ^1.15.0
   flutter:
     sdk: flutter  
-  uri: ^1.0.0
-  collection: ^1.15.0
   lint: ^1.0.0
+  uri: ^1.0.0
 
 dev_dependencies:
   flutter_test:
