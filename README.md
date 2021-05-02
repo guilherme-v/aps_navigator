@@ -4,6 +4,9 @@
 [![codecov](https://codecov.io/gh/guilherme-v/aps_navigator/branch/develop/graph/badge.svg)](https://codecov.io/gh/guilherme-v/aps_navigator)
 [![style: lint](https://img.shields.io/badge/style-lint-4BC0F5.svg)](https://pub.dev/packages/lint)
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
+[![Pub](https://img.shields.io/pub/v/mocktail.svg)](https://pub.dev/packages/aps_navigator)
+[![pub points](https://badges.bar/aps_navigator/pub%20points)](https://pub.dev/packages/aps_navigator)
+[![pub package](https://img.shields.io/pub/v/aps_navigator.svg?color=success)](https://pub.dartlang.org/packages/aps_navigator)
 
 This library is just a wrapper around Navigator 2.0 and Router/Pages API that tries to make their use easier:
 
