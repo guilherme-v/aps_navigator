@@ -8,9 +8,13 @@ class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 
-  static Page route(RouteData _) {
-    return const MaterialPage(
-      key: ValueKey('Home'), // Important to include a key
+  static Page route(RouteData a) {
+    // * Important: AVOID using 'const' keyword at this level, or Pop may not work properly with Web History
+    // ignore: prefer_const_constructors
+    return MaterialPage(
+      // * Important: include a key, you can use 'const' here
+      key: const ValueKey('Home'),
+      // ignore: prefer_const_constructors
       child: HomePage(),
     );
   }
@@ -23,7 +27,7 @@ class _HomePageState extends State<HomePage> {
   void didUpdateWidget(HomePage oldWidget) {
     super.didUpdateWidget(oldWidget);
     final params = APSNavigator.of(context).currentConfig.values;
-    result = params['result'] as String;
+    result = params['result'] as String?;
     if (result != null) _showSnackBar(result!);
   }
 
@@ -170,6 +174,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _showSnackBar(String message) {
+    // print('HERE!: $message');
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(message)),

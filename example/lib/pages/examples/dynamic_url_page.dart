@@ -37,10 +37,17 @@ class _DynamicURLPageState extends State<DynamicURLPage> {
   }
 
   @override
-  void didUpdateWidget(DynamicURLPage oldWidget) {
-    super.didUpdateWidget(oldWidget);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     final previous = APSNavigator.of(context).currentConfig.values;
     tabIndex = (previous['tab'] == 'books') ? 0 : 1;
+  }
+
+  @override
+  void didUpdateWidget(DynamicURLPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // final previous = APSNavigator.of(context).currentConfig.values;
+    // tabIndex = (previous['tab'] == 'books') ? 0 : 1;
   }
 
   @override
