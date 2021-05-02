@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:collection/collection.dart';
 import 'package:uri/uri.dart';
 
-import 'aps_route_build_function.dart';
+import 'route_data.dart';
 
 class ApsRouteMatcher {
   /// Map template URL -> builder
