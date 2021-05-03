@@ -122,7 +122,7 @@ final navigator = APSNavigator.from(
     '/static_url_example': PageBuilder..,
 
     // Defines the location (and queries): '/dynamic_url_example?tab=(tab_value)&other=(other_value)'
-    // Important: Notice that the '?' is only 
+    // Important: Notice that the '?' is used only once 
     '/dynamic_url_example{?tab,other}': PageBuilder..,
 
     // Defines the location (and path variables): '/posts' and '/posts/(post_id_value)'
@@ -202,7 +202,7 @@ class DynamicURLPage extends StatefulWidget {
 
 Example Link: [All Navigating Examples](https://github.com/guilherme-v/aps_navigator/blob/develop/example/lib/pages/home_page.dart)
 
-4.1 - To navigate to a route with **queries variables**:
+4.1 - To navigate to a route with **query variables**:
 
 - :postbox: Template: `/dynamic_url_example{?tab,other}`
 - :house: Address:  `/dynamic_url_example?tab=books&other=abc`
@@ -225,7 +225,7 @@ Example Link: [All Navigating Examples](https://github.com/guilherme-v/aps_navig
  );
 ```
 
-4.3 - You can also include params that **aren't** used as queries variables:
+4.3 - You can also include params that **aren't** used as query variables:
 
 - :postbox: Template: `/static_url_example`
 - :house: Address:  `/static_url_example`
@@ -246,7 +246,7 @@ Example Link: [All Navigating Examples](https://github.com/guilherme-v/aps_navig
 Example Link: [Dynamic URLs Example](https://github.com/guilherme-v/aps_navigator/blob/develop/example/lib/pages/examples/dynamic_url_page.dart)
 
 <p align="center">
-  <img src="gif/dynamic_url_example.gif" height="340">
+  <img src="https://raw.githubusercontent.com/guilherme-v/aps_navigator/develop/gif/dynamic_url_example.gif" height="340">
 </p>
 
 When using dynamic URLs, changing the app's state also changes the browser's URL. To do that:
@@ -283,7 +283,7 @@ When using dynamic URLs, changing the app's state also changes the browser's URL
 Example Link: [Static URLs Example](https://github.com/guilherme-v/aps_navigator/blob/develop/example/lib/pages/examples/static_url_page.dart)
 
 <p align="center">
-  <img src="gif/static_url_example.gif" height="340">
+  <img src="https://raw.githubusercontent.com/guilherme-v/aps_navigator/develop/gif/static_url_example.gif" height="340">
 </p>
 
 When using static URLs, changing the app's state doesn't change the browser's URL, but it'll generate a new entry on the history. To do that:
@@ -318,7 +318,7 @@ When using static URLs, changing the app's state doesn't change the browser's UR
 Example Link: [Return Data Example](https://github.com/guilherme-v/aps_navigator/blob/develop/example/lib/pages/examples/return_data_page.dart)
 
 <p align="center">
-  <img src="gif/return_data_example.gif" height="340">
+  <img src="https://raw.githubusercontent.com/guilherme-v/aps_navigator/develop/gif/return_data_example.gif" height="340">
 </p>
 
 Push a new route and wait the result:
@@ -355,7 +355,7 @@ Pop returning the data:
 Example Link: [Multi Push Example](https://github.com/guilherme-v/aps_navigator/blob/develop/example/lib/pages/examples/multi/multi_push_page.dart)
 
 <p align="center">
-  <img src="gif/multi_push_example.gif" height="340">
+  <img src="https://raw.githubusercontent.com/guilherme-v/aps_navigator/develop/gif/multi_push_example.gif" height="340">
 </p>
 
 Push a list of the Pages at once:
@@ -384,7 +384,7 @@ In the example above `ApsPushParam(path: '/multi_push', params: {'number': 4}),`
 Example Link: [Multi Remove Example](https://github.com/guilherme-v/aps_navigator/blob/develop/example/lib/pages/examples/multi/multi_remove_page.dart)
 
 <p align="center">
-  <img src="gif/multi_remove_example.gif" height="340">
+  <img src="https://raw.githubusercontent.com/guilherme-v/aps_navigator/develop/gif/multi_remove_example.gif" height="340">
 </p>
 
 Remove all the Pages you want given a range:
@@ -398,7 +398,7 @@ Remove all the Pages you want given a range:
 Example Link: [Internal Navigator Example](https://github.com/guilherme-v/aps_navigator/blob/develop/example/lib/pages/examples/internal_navigator/internal_navigator.dart)
 
 <p align="center">
-  <img src="gif/internal_nav_example.gif" height="340">
+  <img src="https://raw.githubusercontent.com/guilherme-v/aps_navigator/develop/gif/internal_nav_example.gif" height="340">
 </p>
 
 

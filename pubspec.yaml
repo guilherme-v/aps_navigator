@@ -1,6 +1,6 @@
 name: aps_navigator
 description: A wrapper around Navigator 2.0 and Router/Pages API to make their use a little easier. It offers Web support and complete control of the Route Stack.
-version: 0.0.4-dev.8
+version: 0.0.4-dev.9
 homepage: https://github.com/guilherme-v/aps_navigator
 
 environment:
