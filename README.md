@@ -4,8 +4,8 @@
 [![codecov](https://codecov.io/gh/guilherme-v/aps_navigator/branch/develop/graph/badge.svg)](https://codecov.io/gh/guilherme-v/aps_navigator)
 [![style: lint](https://img.shields.io/badge/style-lint-4BC0F5.svg)](https://pub.dev/packages/lint)
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
-[![pub points](https://badges.bar/aps_navigator/pub%20points)](https://pub.dev/packages/aps_navigator)
 [![pub package](https://img.shields.io/pub/v/aps_navigator.svg?color=success)](https://pub.dartlang.org/packages/aps_navigator)
+<!-- [![pub points](https://badges.bar/aps_navigator/pub%20points)](https://pub.dev/packages/aps_navigator) -->
 
 This library is just a wrapper around Navigator 2.0 and Router/Pages API that tries to make their use easier:
 
@@ -129,7 +129,7 @@ final navigator = APSNavigator.from(
     '/posts': PageBuilder..,
     '/posts/{post_id}': PageBuilder..,
 
-    // Defines the location (with path and queries variables): '/path/(id_value)?q1=(q1_value)&q2=(q2_value)'.
+    // Defines the location (with path and query variables): '/path/(id_value)?q1=(q1_value)&q2=(q2_value)'.
     '/path/{id}?{?q1,q2}': PageBuilder..,
 
     // Defines app root - default
@@ -236,8 +236,6 @@ Example Link: [All Navigating Examples](https://github.com/guilherme-v/aps_navig
     params: {'tab': 'books'}, // It'll be added to [RouteData.values['tab']]
  );
 ```
-
----
 
 ## :wine_glass: Details
 
