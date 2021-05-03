@@ -122,14 +122,14 @@ final navigator = APSNavigator.from(
     '/static_url_example': PageBuilder..,
 
     // Defines the location (and queries): '/dynamic_url_example?tab=(tab_value)&other=(other_value)'
-    // Important: Notice that the '?' is only 
+    // Important: Notice that the '?' is used only once 
     '/dynamic_url_example{?tab,other}': PageBuilder..,
 
     // Defines the location (and path variables): '/posts' and '/posts/(post_id_value)'
     '/posts': PageBuilder..,
     '/posts/{post_id}': PageBuilder..,
 
-    // Defines the location (with path and query variables): '/path/(id_value)?q1=(q1_value)&q2=(q2_value)'.
+    // Defines the location (with path and queries variables): '/path/(id_value)?q1=(q1_value)&q2=(q2_value)'.
     '/path/{id}?{?q1,q2}': PageBuilder..,
 
     // Defines app root - default
